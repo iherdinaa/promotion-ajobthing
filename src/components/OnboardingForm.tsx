@@ -89,7 +89,7 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
         {/* Header */}
         <div className="bg-gradient-to-r from-orange-500 to-orange-600 py-4 px-4 text-center shrink-0">
           <h1 className="text-2xl lg:text-4xl font-black text-white tracking-wide uppercase drop-shadow-md">
-            Unlock Rewards After Saving Fuel
+            Claim Your Rewards
           </h1>
         </div>
         

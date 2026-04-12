@@ -52,7 +52,6 @@ export default function Game({ onComplete }: GameProps) {
           setTimeout(() => onComplete(true), 1500);
         } else if (fuelRef.current <= 0) {
           setGameState('lost');
-          setTimeout(() => onComplete(false), 1500);
         }
       }
 
@@ -143,12 +142,37 @@ export default function Game({ onComplete }: GameProps) {
           <motion.div 
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-white p-8 rounded-3xl text-center shadow-2xl"
+            className="bg-white p-8 rounded-3xl text-center shadow-2xl max-w-sm w-[90%]"
           >
             <h2 className={`text-4xl font-black mb-4 ${gameState === 'won' ? 'text-green-600' : 'text-red-600'}`}>
               {gameState === 'won' ? 'You Made It Home!' : 'Out of Gas!'}
             </h2>
-            <p className="text-xl text-gray-600">Distance: {((progress / 100) * 20).toFixed(1)} KM</p>
+            <p className={`text-xl text-gray-600 ${gameState === 'lost' ? 'mb-6' : ''}`}>Distance: {((progress / 100) * 20).toFixed(1)} KM</p>
+            
+            {gameState === 'lost' && (
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={() => {
+                    setGameState('playing');
+                    setProgress(0);
+                    setFuel(100);
+                    progressRef.current = 0;
+                    fuelRef.current = 100;
+                    isMoving.current = false;
+                    lastTime.current = null;
+                  }}
+                  className="w-full bg-orange-500 text-white font-bold py-3 rounded-xl hover:bg-orange-600 transition-colors shadow-md"
+                >
+                  Try Again
+                </button>
+                <button 
+                  onClick={() => onComplete(false)}
+                  className="w-full bg-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-300 transition-colors shadow-md"
+                >
+                  Continue
+                </button>
+              </div>
+            )}
           </motion.div>
         </div>
       )}
