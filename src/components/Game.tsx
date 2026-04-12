@@ -1,0 +1,231 @@
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
+
+interface GameProps {
+  onComplete: (won: boolean) => void;
+}
+
+export default function Game({ onComplete }: GameProps) {
+  const [showTutorial, setShowTutorial] = useState(true);
+  const [progress, setProgress] = useState(0); // 0 to 100
+  const [fuel, setFuel] = useState(100); // 100 to 0
+  const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
+  
+  const progressRef = useRef(0);
+  const fuelRef = useRef(100);
+  const isMoving = useRef(false);
+  const lastTime = useRef<number | null>(null);
+  const frameRef = useRef<number>(0);
+
+  // Trees generation
+  const trees = useRef(Array.from({ length: 25 }).map((_, i) => ({
+    id: i,
+    startPos: 40 + i * 13 + Math.random() * 10, // distribute along the 400vw track
+    type: Math.random() > 0.5 
+      ? "https://files.ajt.my/images/marketing-campaign/image-74a9bf62-f872-438e-8430-c26b68188331.png"
+      : "https://files.ajt.my/images/marketing-campaign/image-6882b127-7e1d-46e3-ba34-3ef72ff236e0.png"
+  })));
+
+  useEffect(() => {
+    const loop = (time: number) => {
+      if (!lastTime.current) lastTime.current = time;
+      const dt = time - lastTime.current;
+      lastTime.current = time;
+
+      if (gameState === 'playing' && !showTutorial) {
+        // Fuel depletes continuously over 8 seconds (8000ms)
+        const newFuel = Math.max(0, fuelRef.current - (dt / 8000) * 100);
+        fuelRef.current = newFuel;
+        setFuel(newFuel);
+
+        // Progress increases when holding the button
+        // Takes 7 seconds of holding to reach 100% (20KM)
+        if (isMoving.current) {
+          const newProgress = Math.min(100, progressRef.current + (dt / 7000) * 100);
+          progressRef.current = newProgress;
+          setProgress(newProgress);
+        }
+
+        // Win/Loss conditions
+        if (progressRef.current >= 100) {
+          setGameState('won');
+          setTimeout(() => onComplete(true), 1500);
+        } else if (fuelRef.current <= 0) {
+          setGameState('lost');
+          setTimeout(() => onComplete(false), 1500);
+        }
+      }
+
+      frameRef.current = requestAnimationFrame(loop);
+    };
+
+    frameRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frameRef.current);
+  }, [gameState, showTutorial, onComplete]);
+
+  // Keyboard controls
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'ArrowRight' || e.code === 'Space') isMoving.current = true;
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'ArrowRight' || e.code === 'Space') isMoving.current = false;
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  return (
+    <div 
+      className="relative w-full h-screen overflow-hidden select-none bg-sky-200"
+      onPointerDown={() => isMoving.current = true}
+      onPointerUp={() => isMoving.current = false}
+      onPointerLeave={() => isMoving.current = false}
+    >
+      {/* Scrolling Track (Background + Scenery) */}
+      <div 
+        className="absolute top-0 left-0 h-full flex"
+        style={{ 
+          width: '600vw',
+          transform: `translateX(-${progress * 3.6}vw)` // Scrolls by 360vw total
+        }}
+      >
+        <div className="h-full w-[400vw] shrink-0 bg-bottom" style={{ backgroundImage: `url('https://files.ajt.my/images/marketing-campaign/image-b64feb0d-6355-4124-b495-474b7afa581c.jpg')`, backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat' }} />
+        <div className="h-full w-[200vw] shrink-0 bg-bottom" style={{ backgroundImage: `url('https://files.ajt.my/images/marketing-campaign/image-dc99086a-85df-48e0-ad15-2052975484f7.jpg')`, backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat' }} />
+
+        {/* Scenery Container */}
+        <div className="absolute bottom-[20%] left-0 w-full h-64">
+          {/* Start Line (Office) */}
+          <img 
+            src="https://files.ajt.my/images/marketing-campaign/image-b2288b81-e262-4890-9d5b-136ac2bd048b.png" 
+            className="absolute bottom-0 h-48 object-contain"
+            style={{ left: '20vw' }}
+          />
+
+          {/* Trees */}
+          {trees.current.map(tree => (
+            <img 
+              key={tree.id}
+              src={tree.type} 
+              className="absolute bottom-0 h-32 object-contain"
+              style={{ left: `${tree.startPos}vw` }}
+            />
+          ))}
+
+          {/* Finish Line (Home) */}
+          <img 
+            src="https://files.ajt.my/images/marketing-campaign/image-a3b17a1e-d594-469e-beb0-1d18b7d8f2e4.png" 
+            className="absolute bottom-0 h-48 object-contain"
+            style={{ left: '380vw' }}
+          />
+        </div>
+      </div>
+
+      {/* Car (Fixed on screen) */}
+      <div className="absolute bottom-[20%] left-0 w-full h-64 pointer-events-none">
+        <img 
+          src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTV0ZnR3dW11bHp2dGNyZHlza24wdm82ajN6azdyZzMxajNpdG10MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/7kItzil2hsUYcsfvkg/giphy.gif" 
+          className="absolute bottom-0 h-32 object-contain z-20"
+          style={{ 
+            left: '20vw',
+            transform: `translateY(${isMoving.current ? Math.sin(progress * 2) * 5 : 0}px) rotate(${isMoving.current ? Math.cos(progress * 2) * 2 : 0}deg)`
+          }}
+        />
+      </div>
+
+      {/* Game Over / Win Overlay */}
+      {gameState !== 'playing' && !showTutorial && (
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
+          <motion.div 
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white p-8 rounded-3xl text-center shadow-2xl"
+          >
+            <h2 className={`text-4xl font-black mb-4 ${gameState === 'won' ? 'text-green-600' : 'text-red-600'}`}>
+              {gameState === 'won' ? 'You Made It Home!' : 'Out of Gas!'}
+            </h2>
+            <p className="text-xl text-gray-600">Distance: {((progress / 100) * 20).toFixed(1)} KM</p>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Tutorial Overlay */}
+      {showTutorial && (
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white p-8 rounded-3xl text-center shadow-2xl max-w-md w-[90%]"
+          >
+            <h2 className="text-3xl font-black text-orange-500 mb-4">How to Play</h2>
+            <div className="space-y-4 text-gray-700 font-medium mb-8">
+              <p>🚐 Drive the van to reach the office (20 KM away).</p>
+              <p>⛽ Watch your fuel! It runs out quickly.</p>
+              <p>👆 <strong>Desktop:</strong> Hold Right Arrow or Spacebar.</p>
+              <p>👆 <strong>Mobile:</strong> Tap and hold the screen.</p>
+            </div>
+            <button 
+              onClick={() => setShowTutorial(false)}
+              className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-black py-4 rounded-xl text-xl hover:scale-105 transition-transform shadow-lg"
+            >
+              PLAY NOW
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Tap Instruction */}
+      {progress === 0 && gameState === 'playing' && !showTutorial && (
+        <div className="absolute top-1/3 w-full text-center pointer-events-none animate-pulse">
+          <h2 className="text-4xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
+            TAP & HOLD TO DRIVE
+          </h2>
+        </div>
+      )}
+
+      {/* Distance Tracker (Top) */}
+      {!showTutorial && (
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-6 py-2 rounded-full shadow-lg border-2 border-gray-200 z-40">
+          <span className="text-2xl font-black text-gray-800">
+            {((progress / 100) * 20).toFixed(1)} <span className="text-orange-500 text-lg">/ 20.0 KM</span>
+          </span>
+        </div>
+      )}
+
+      {/* UI Meter (Bottom) */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-black p-3 rounded-xl border-4 border-gray-800 flex items-center gap-4 shadow-2xl z-40">
+        <img src="https://files.ajt.my/images/marketing-campaign/image-3690c278-bcb8-4a0e-b65f-bc5b23eff943.png" className="h-16 object-contain" />
+        
+        <div className="flex-1 flex flex-col gap-2">
+          {/* Fuel Bar (Red) */}
+          <div className="relative w-full h-8 bg-gray-900 border-2 border-gray-700 rounded overflow-hidden">
+            <div 
+              className="absolute top-0 left-0 h-full bg-red-600 transition-all duration-75"
+              style={{ width: `${fuel}%` }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-sm drop-shadow-md">
+              {fuel.toFixed(2)}%
+            </div>
+          </div>
+          
+          {/* Home Bar (Green) */}
+          <div className="relative w-full h-8 bg-gray-900 border-2 border-gray-700 rounded overflow-hidden">
+            <div 
+              className="absolute top-0 left-0 h-full bg-green-600 transition-all duration-75"
+              style={{ width: `${100 - progress}%` }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-sm drop-shadow-md">
+              {(100 - progress).toFixed(2)}%
+            </div>
+          </div>
+        </div>
+
+        <img src="https://files.ajt.my/images/marketing-campaign/image-a3b17a1e-d594-469e-beb0-1d18b7d8f2e4.png" className="h-16 object-contain" />
+      </div>
+    </div>
+  );
+}
