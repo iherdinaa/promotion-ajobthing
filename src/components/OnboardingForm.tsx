@@ -51,7 +51,7 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
   const [q3, setQ3] = useState<string[]>([]);
   const [otherText, setOtherText] = useState("");
 
-  const q1Options = ["Currently hiring", "Hiring after Raya", "Hiring in 3 months", "Not yet planned"];
+  const q1Options = ["Currently hiring", "Hiring Next Month", "Hiring in 3 months", "Not yet planned"];
   const q2Options = ["1–6", "7-15", "16-30", "More than 30"];
   const q3Options = ["AJobThing (Maukerja & Ricebowl)", "Jobstreet", "LinkedIn", "Recruitment agency", "Social media", "Others"];
 
@@ -67,8 +67,7 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
 
   const isFormValid = () => {
     if (!q1) return false;
-    if (isNotPlanned) return true;
-    if (!q2) return false;
+    if (!isNotPlanned && !q2) return false;
     if (q3.length === 0) return false;
     if (q3.includes("Others") && otherText.trim() === "") return false;
     return true;
@@ -118,8 +117,6 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
                     setQ1(opt);
                     if (opt === "Not yet planned") {
                       setQ2(null);
-                      setQ3([]);
-                      setOtherText("");
                     }
                   }}
                   className={`w-full text-left px-4 py-3 rounded-xl border-2 font-bold transition-all text-sm ${
@@ -159,7 +156,7 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
           </div>
 
           {/* Question 3 */}
-          <div className={`space-y-3 transition-opacity duration-300 ${isNotPlanned ? 'opacity-40 pointer-events-none grayscale' : ''}`}>
+          <div className="space-y-3 transition-opacity duration-300">
             <div className="flex items-start gap-3 mb-4">
               <div className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold shrink-0 mt-0.5 shadow-md">3</div>
               <h3 className="text-base font-bold text-orange-900">Which job portals are you currently using for hiring? <span className="text-xs font-normal text-gray-500 block">(Multiple choice)</span></h3>
@@ -169,7 +166,6 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
                 <div key={opt} className="flex flex-col gap-1.5">
                   <button
                     onClick={() => toggleQ3(opt)}
-                    disabled={isNotPlanned}
                     className={`w-full text-left px-4 py-3 rounded-xl border-2 font-bold transition-all flex items-center justify-between text-sm ${
                       q3.includes(opt)
                         ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-sm' 

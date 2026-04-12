@@ -143,9 +143,30 @@ export default function RewardScreen({ onPlayAgain, gameWon }: RewardScreenProps
           <div className="flex flex-col items-center gap-3">
             <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Share this game</span>
             <div className="flex gap-3">
-              <button className="bg-[#25D366] text-white px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 shadow-md">WhatsApp</button>
-              <button className="bg-[#0A66C2] text-white px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 shadow-md">LinkedIn</button>
-              <button className="bg-[#1877F2] text-white px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 shadow-md">Facebook</button>
+              <a 
+                href="https://api.whatsapp.com/send?text=Play%20Fuel%20Your%20Hiring%20and%20win%20exclusive%20rewards!%20%F0%9F%9A%97%F0%9F%92%A8%20https%3A%2F%2Fpromotion.ajobthing.com%2F"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#25D366] text-white px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 shadow-md inline-block"
+              >
+                WhatsApp
+              </a>
+              <a 
+                href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fpromotion.ajobthing.com%2F"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#0A66C2] text-white px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 shadow-md inline-block"
+              >
+                LinkedIn
+              </a>
+              <a 
+                href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpromotion.ajobthing.com%2F"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#1877F2] text-white px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 shadow-md inline-block"
+              >
+                Facebook
+              </a>
             </div>
           </div>
 

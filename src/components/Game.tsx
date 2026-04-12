@@ -162,11 +162,14 @@ export default function Game({ onComplete }: GameProps) {
             className="bg-white p-8 rounded-3xl text-center shadow-2xl max-w-md w-[90%]"
           >
             <h2 className="text-3xl font-black text-orange-500 mb-4">How to Play</h2>
-            <div className="space-y-4 text-gray-700 font-medium mb-8">
-              <p>🚐 Drive the van to reach the office (20 KM away).</p>
-              <p>⛽ Watch your fuel! It runs out quickly.</p>
-              <p>👆 <strong>Desktop:</strong> Hold Right Arrow or Spacebar.</p>
-              <p>👆 <strong>Mobile:</strong> Tap and hold the screen.</p>
+            <img 
+              src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmhydDh0NTZ6Z2l4YWd3NzRhcHdncHZyOWM2ZWRuN3VpajFpejF5bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7BLdFeQR7vwqYBM4Qw/giphy.gif" 
+              alt="Tutorial" 
+              className="w-full rounded-xl mb-6 shadow-md"
+            />
+            <div className="space-y-4 text-gray-700 font-medium mb-8 text-sm lg:text-base text-left bg-orange-50 p-4 rounded-xl border border-orange-100">
+              <p>👉 <strong className="text-orange-600">Hold the Right Arrow</strong> (or tap & hold on mobile) to drive home!</p>
+              <p>⛽ <strong className="text-red-600">Watch your fuel!</strong> It runs out very fast.</p>
             </div>
             <button 
               onClick={() => setShowTutorial(false)}

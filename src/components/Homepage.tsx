@@ -47,13 +47,27 @@ const Snow = () => {
 
 export default function Homepage({ onStart }: HomepageProps) {
   const [formData, setFormData] = useState({ companyName: "", email: "", phone: "", hasAccount: "" });
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.hasAccount) {
-      alert("Please select if you have an AJobThing account.");
+      setErrorMsg("Please select if you have an AJobThing account.");
       return;
     }
+
+    // Check if played today
+    const today = new Date().toDateString();
+    const lastPlayed = localStorage.getItem(`played_${formData.email.toLowerCase()}`);
+    
+    if (lastPlayed === today) {
+      setErrorMsg("This email has already played today. Please try again tomorrow!");
+      return;
+    }
+    
+    // Save play date
+    localStorage.setItem(`played_${formData.email.toLowerCase()}`, today);
+    setErrorMsg("");
     onStart(formData);
   };
 
@@ -156,7 +170,7 @@ export default function Homepage({ onStart }: HomepageProps) {
               style={{ height: '106px' }}
             >
               <h3 className="text-2xl font-black tracking-tight mb-1">Don't Run Out the Gas</h3>
-              <p className="text-red-100 font-medium text-sm text-center">Enter details to start going home & win rewards</p>
+              <p className="text-red-100 font-medium text-sm text-center">Enter details to start playing & win rewards</p>
             </div>
 
             {/* Form Body */}
@@ -167,7 +181,7 @@ export default function Homepage({ onStart }: HomepageProps) {
             >
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Company Name</label>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Company Name <span className="text-red-500">*</span></label>
                   <input 
                     type="text" placeholder="e.g. AJobThing Sdn Bhd" required
                     className="w-full p-2.5 text-sm rounded-lg border-2 border-gray-200 focus:border-red-500 outline-none bg-white transition-colors"
@@ -177,7 +191,7 @@ export default function Homepage({ onStart }: HomepageProps) {
                 </div>
                 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Email Address</label>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Email Address <span className="text-red-500">*</span></label>
                   <input 
                     type="email" placeholder="youremail@gmail.com" required
                     className="w-full p-2.5 text-sm rounded-lg border-2 border-gray-200 focus:border-red-500 outline-none bg-white transition-colors"
@@ -187,7 +201,7 @@ export default function Homepage({ onStart }: HomepageProps) {
                 </div>
                 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Phone Number</label>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Phone Number <span className="text-red-500">*</span></label>
                   <div className="flex">
                     <span className="bg-white border-2 border-r-0 border-gray-200 rounded-l-lg p-2.5 flex items-center font-bold text-gray-700 text-sm">
                       🇲🇾 +60
@@ -233,12 +247,19 @@ export default function Homepage({ onStart }: HomepageProps) {
                 </div>
               </div>
 
-              <button 
-                type="submit"
-                className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-gray-900 font-black py-3.5 rounded-lg text-lg hover:from-orange-500 hover:to-orange-600 transition-all transform hover:scale-[1.02] shadow-lg mt-4"
-              >
-                START NOW ⛽
-              </button>
+              <div className="mt-4">
+                {errorMsg && (
+                  <div className="mb-3 p-2 bg-red-50 border border-red-200 text-red-600 text-sm font-bold rounded-lg text-center">
+                    {errorMsg}
+                  </div>
+                )}
+                <button 
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-gray-900 font-black py-3.5 rounded-lg text-lg hover:from-orange-500 hover:to-orange-600 transition-all transform hover:scale-[1.02] shadow-lg"
+                >
+                  START NOW ⛽
+                </button>
+              </div>
             </form>
           </motion.div>
 
