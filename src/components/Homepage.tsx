@@ -68,7 +68,15 @@ export default function Homepage({ onStart }: HomepageProps) {
     // Save play date
     localStorage.setItem(`played_${formData.email.toLowerCase()}`, today);
     setErrorMsg("");
-    onStart(formData);
+    // Format phone number to start with 60 before passing it
+    let formattedPhone = formData.phone;
+    if (formattedPhone.startsWith('0')) {
+      formattedPhone = '60' + formattedPhone.substring(1);
+    } else if (!formattedPhone.startsWith('60') && formattedPhone.length > 0) {
+      formattedPhone = '60' + formattedPhone;
+    }
+
+    onStart({ ...formData, phone: formattedPhone });
   };
 
   return (

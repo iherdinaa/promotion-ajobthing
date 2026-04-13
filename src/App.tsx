@@ -23,6 +23,7 @@ export default function App() {
       companyName: formData.companyName,
       email: formData.email,
       phone: formData.phone,
+      ajtAccount: formData.hasAccount,
       status: gameWon ? 'Got Ticket' : 'No Ticket',
       hiringTimeline: onboardingData.q1,
       headcount: onboardingData.q2,
