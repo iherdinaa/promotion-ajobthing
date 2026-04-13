@@ -10,14 +10,21 @@ const Snow = () => {
   const [flakes, setFlakes] = useState<{ id: number; left: number; delay: number; duration: number; img: string }[]>([]);
 
   useEffect(() => {
-    const newFlakes = Array.from({ length: 20 }).map((_, i) => ({
+    const snowImages = [
+      "https://files.ajt.my/images/marketing-campaign/image-b5c61653-48e5-404d-aa95-da0f2ecc5351.png",
+      "https://files.ajt.my/images/marketing-campaign/image-4851506e-34bf-49a7-b5ab-ee7c373b4c23.png",
+      "https://files.ajt.my/images/marketing-campaign/image-c98293ab-72f4-44d2-b13b-69d0f4b63ee2.png",
+      "https://files.ajt.my/images/marketing-campaign/image-bf6f65c2-7bff-4e8d-975c-69e46d32ca4e.png",
+      "https://files.ajt.my/images/marketing-campaign/image-80a52377-e207-425d-9460-cdcecba8aaf6.png",
+      "https://files.ajt.my/images/marketing-campaign/image-94a8893a-6ede-43e7-9f77-d78f7ba1ccf6.png"
+    ];
+
+    const newFlakes = Array.from({ length: 30 }).map((_, i) => ({
       id: i,
       left: Math.random() * 100,
       delay: Math.random() * 5,
       duration: 5 + Math.random() * 5,
-      img: Math.random() > 0.5 
-        ? "https://files.ajt.my/images/marketing-campaign/image-b5c61653-48e5-404d-aa95-da0f2ecc5351.png"
-        : "https://files.ajt.my/images/marketing-campaign/image-4851506e-34bf-49a7-b5ab-ee7c373b4c23.png"
+      img: snowImages[Math.floor(Math.random() * snowImages.length)]
     }));
     setFlakes(newFlakes);
   }, []);
@@ -117,7 +124,7 @@ export default function RewardScreen({ onPlayAgain, gameWon }: RewardScreenProps
               <div className="relative">
                 {gameWon && <div className="absolute inset-0 bg-orange-400/20 blur-xl rounded-full"></div>}
                 <img 
-                  src="https://files.ajt.my/images/marketing-campaign/image-e44feda6-e67b-43b5-9751-d1350349c304.png" 
+                  src="https://files.ajt.my/images/marketing-campaign/image-dd64c0ff-e7f2-4959-9c50-3cf7d846d3d1.png" 
                   className={`relative h-40 object-contain drop-shadow-2xl z-10 transition-all ${!gameWon ? 'grayscale opacity-40' : ''}`} 
                   alt="Fuel Top Up" 
                 />

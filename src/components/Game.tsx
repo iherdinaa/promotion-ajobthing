@@ -17,7 +17,6 @@ export default function Game({ onComplete }: GameProps) {
   const fuelRef = useRef(100);
   const speedRef = useRef(0);
   const isMoving = useRef(false);
-  const isBraking = useRef(false);
   const canDriveRef = useRef(false);
   const lastTime = useRef<number | null>(null);
   const frameRef = useRef<number>(0);
@@ -63,13 +62,13 @@ export default function Game({ onComplete }: GameProps) {
         setFuel(newFuel);
 
         // Speed simulation
-        const targetSpeed = isMoving.current && !isBraking.current ? 85 : 0;
+        const targetSpeed = isMoving.current ? 85 : 0;
         speedRef.current += (targetSpeed - speedRef.current) * (dt / 500); // Smooth acceleration/deceleration
         setSpeed(Math.round(speedRef.current));
 
         // Progress increases when holding the button
         // Takes 7 seconds of holding to reach 100% (20KM)
-        if (isMoving.current && !isBraking.current) {
+        if (isMoving.current) {
           const newProgress = Math.min(100, progressRef.current + (dt / 7000) * 100);
           progressRef.current = newProgress;
           setProgress(newProgress);
@@ -101,11 +100,9 @@ export default function Game({ onComplete }: GameProps) {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!canDriveRef.current) return;
       if (e.code === 'ArrowRight' || e.code === 'Space') isMoving.current = true;
-      if (e.code === 'ArrowLeft') isBraking.current = true;
     };
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.code === 'ArrowRight' || e.code === 'Space') isMoving.current = false;
-      if (e.code === 'ArrowLeft') isBraking.current = false;
     };
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
@@ -267,7 +264,6 @@ export default function Game({ onComplete }: GameProps) {
             <div className="space-y-4 text-gray-700 font-medium mb-8 text-sm lg:text-base text-left bg-orange-50 p-4 rounded-xl border border-orange-100">
               <p>🏆 <strong className="text-green-600">How to Win:</strong> Drive home without running out of gas!</p>
               <p>👉 <strong className="text-orange-600">Hold the Gas Pedal</strong> (bottom right) to drive.</p>
-              <p>🛑 <strong className="text-red-600">Use the Brake</strong> (bottom left) to stop.</p>
               <p>⛽ <strong className="text-red-600">Watch your fuel!</strong> It runs out very fast.</p>
             </div>
             <button 
@@ -308,16 +304,6 @@ export default function Game({ onComplete }: GameProps) {
       {/* Pedals */}
       {!showTutorial && gameState === 'playing' && countdown === null && (
         <>
-          {/* Brake Pedal (Left) */}
-          <div 
-            className="absolute bottom-28 md:bottom-32 left-4 md:left-10 z-40 active:scale-95 transition-transform cursor-pointer"
-            onPointerDown={(e) => { e.preventDefault(); isBraking.current = true; }}
-            onPointerUp={(e) => { e.preventDefault(); isBraking.current = false; }}
-            onPointerLeave={(e) => { e.preventDefault(); isBraking.current = false; }}
-          >
-            <img src="https://files.ajt.my/images/marketing-campaign/image-a5170d7f-f4a8-40f7-9b29-d96c6621d712.png" className="w-20 md:w-28 drop-shadow-xl" alt="Brake" />
-          </div>
-
           {/* Gas Pedal (Right) */}
           <div 
             className="absolute bottom-28 md:bottom-32 right-4 md:right-10 z-40 active:scale-95 transition-transform cursor-pointer"
