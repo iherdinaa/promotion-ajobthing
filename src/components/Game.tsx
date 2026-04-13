@@ -10,11 +10,14 @@ export default function Game({ onComplete }: GameProps) {
   const [countdown, setCountdown] = useState<number | string | null>(null);
   const [progress, setProgress] = useState(0); // 0 to 100
   const [fuel, setFuel] = useState(100); // 100 to 0
+  const [speed, setSpeed] = useState(0);
   const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
   
   const progressRef = useRef(0);
   const fuelRef = useRef(100);
+  const speedRef = useRef(0);
   const isMoving = useRef(false);
+  const isBraking = useRef(false);
   const canDriveRef = useRef(false);
   const lastTime = useRef<number | null>(null);
   const frameRef = useRef<number>(0);
@@ -59,9 +62,14 @@ export default function Game({ onComplete }: GameProps) {
         fuelRef.current = newFuel;
         setFuel(newFuel);
 
+        // Speed simulation
+        const targetSpeed = isMoving.current && !isBraking.current ? 85 : 0;
+        speedRef.current += (targetSpeed - speedRef.current) * (dt / 500); // Smooth acceleration/deceleration
+        setSpeed(Math.round(speedRef.current));
+
         // Progress increases when holding the button
         // Takes 7 seconds of holding to reach 100% (20KM)
-        if (isMoving.current) {
+        if (isMoving.current && !isBraking.current) {
           const newProgress = Math.min(100, progressRef.current + (dt / 7000) * 100);
           progressRef.current = newProgress;
           setProgress(newProgress);
@@ -70,11 +78,14 @@ export default function Game({ onComplete }: GameProps) {
         // Win/Loss conditions
         if (progressRef.current >= 100) {
           canDriveRef.current = false;
-          setGameState('won');
-          setTimeout(() => onComplete(true), 1500);
+          if (gameState !== 'won') {
+            setGameState('won');
+          }
         } else if (fuelRef.current <= 0) {
           canDriveRef.current = false;
-          setGameState('lost');
+          if (gameState !== 'lost') {
+            setGameState('lost');
+          }
         }
       }
 
@@ -90,9 +101,11 @@ export default function Game({ onComplete }: GameProps) {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!canDriveRef.current) return;
       if (e.code === 'ArrowRight' || e.code === 'Space') isMoving.current = true;
+      if (e.code === 'ArrowLeft') isBraking.current = true;
     };
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.code === 'ArrowRight' || e.code === 'Space') isMoving.current = false;
+      if (e.code === 'ArrowLeft') isBraking.current = false;
     };
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
@@ -105,9 +118,6 @@ export default function Game({ onComplete }: GameProps) {
   return (
     <div 
       className="relative w-full h-screen overflow-hidden select-none bg-sky-200"
-      onPointerDown={() => { if (canDriveRef.current) isMoving.current = true; }}
-      onPointerUp={() => isMoving.current = false}
-      onPointerLeave={() => isMoving.current = false}
     >
       {/* Scrolling Track (Background + Scenery) */}
       <div 
@@ -168,11 +178,31 @@ export default function Game({ onComplete }: GameProps) {
             animate={{ scale: 1, opacity: 1 }}
             className="bg-white p-8 rounded-3xl text-center shadow-2xl max-w-sm w-[90%]"
           >
-            <h2 className={`text-4xl font-black mb-4 ${gameState === 'won' ? 'text-green-600' : 'text-red-600'}`}>
-              {gameState === 'won' ? 'You Made It Home!' : 'Out of Gas!'}
+            <h2 className={`text-3xl lg:text-4xl font-black mb-4 ${gameState === 'won' ? 'text-green-600' : 'text-red-600'}`}>
+              {gameState === 'won' ? "Well done, You've Arrived Home" : 'Oops, you ran out of gas!'}
             </h2>
-            <p className={`text-xl text-gray-600 ${gameState === 'lost' ? 'mb-6' : ''}`}>Distance: {((progress / 100) * 20).toFixed(1)} KM</p>
+            {gameState === 'won' ? (
+              <div className="text-gray-600 mb-6 space-y-2 text-sm lg:text-base">
+                <p className="font-bold text-green-600">You didn't run out of gas. You got 1 Fuel Lucky Draw Ticket.</p>
+                <p>Claim to redeem all rewards.</p>
+              </div>
+            ) : (
+              <div className="text-gray-600 mb-6 space-y-2 text-sm lg:text-base">
+                <p className="font-bold text-red-500">You didn’t reach home, so you didn’t get a fuel lucky draw ticket.</p>
+                <p>Want to get lucky draw ticket? Click <strong>Try Again</strong></p>
+                <p>Or click <strong>Continue</strong> to skip.</p>
+              </div>
+            )}
             
+            {gameState === 'won' && (
+              <button 
+                onClick={() => onComplete(true)}
+                className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold py-3 rounded-xl hover:scale-105 transition-transform shadow-md"
+              >
+                Claim Now
+              </button>
+            )}
+
             {gameState === 'lost' && (
               <div className="flex flex-col gap-3">
                 <button 
@@ -235,7 +265,9 @@ export default function Game({ onComplete }: GameProps) {
               className="w-full rounded-xl mb-6 shadow-md"
             />
             <div className="space-y-4 text-gray-700 font-medium mb-8 text-sm lg:text-base text-left bg-orange-50 p-4 rounded-xl border border-orange-100">
-              <p>👉 <strong className="text-orange-600">Hold the Right Arrow</strong> (or tap & hold on mobile) to drive home!</p>
+              <p>🏆 <strong className="text-green-600">How to Win:</strong> Drive home without running out of gas!</p>
+              <p>👉 <strong className="text-orange-600">Hold the Gas Pedal</strong> (bottom right) to drive.</p>
+              <p>🛑 <strong className="text-red-600">Use the Brake</strong> (bottom left) to stop.</p>
               <p>⛽ <strong className="text-red-600">Watch your fuel!</strong> It runs out very fast.</p>
             </div>
             <button 
@@ -252,18 +284,50 @@ export default function Game({ onComplete }: GameProps) {
       {progress === 0 && gameState === 'playing' && !showTutorial && countdown === null && (
         <div className="absolute top-1/3 w-full text-center pointer-events-none animate-pulse">
           <h2 className="text-4xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
-            TAP & HOLD TO DRIVE
+            HOLD GAS TO DRIVE
           </h2>
         </div>
       )}
 
-      {/* Distance Tracker (Top) */}
+      {/* Distance Tracker & Speedometer (Top) */}
       {!showTutorial && (
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-6 py-2 rounded-full shadow-lg border-2 border-gray-200 z-40">
-          <span className="text-2xl font-black text-gray-800">
-            {((progress / 100) * 20).toFixed(1)} <span className="text-orange-500 text-lg">/ 20.0 KM</span>
-          </span>
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 flex flex-col md:flex-row gap-2 md:gap-4 z-40">
+          <div className="bg-white/90 backdrop-blur-sm px-6 py-2 rounded-full shadow-lg border-2 border-gray-200 flex items-center justify-center">
+            <span className="text-xl md:text-2xl font-black text-gray-800">
+              {((progress / 100) * 20).toFixed(1)} <span className="text-orange-500 text-base md:text-lg">/ 20.0 KM</span>
+            </span>
+          </div>
+          <div className="bg-white/90 backdrop-blur-sm px-6 py-2 rounded-full shadow-lg border-2 border-gray-200 flex items-center justify-center">
+            <span className="text-xl md:text-2xl font-black text-gray-800">
+              {speed} <span className="text-orange-500 text-base md:text-lg">km/h</span>
+            </span>
+          </div>
         </div>
+      )}
+
+      {/* Pedals */}
+      {!showTutorial && gameState === 'playing' && countdown === null && (
+        <>
+          {/* Brake Pedal (Left) */}
+          <div 
+            className="absolute bottom-28 md:bottom-32 left-4 md:left-10 z-40 active:scale-95 transition-transform cursor-pointer"
+            onPointerDown={(e) => { e.preventDefault(); isBraking.current = true; }}
+            onPointerUp={(e) => { e.preventDefault(); isBraking.current = false; }}
+            onPointerLeave={(e) => { e.preventDefault(); isBraking.current = false; }}
+          >
+            <img src="https://files.ajt.my/images/marketing-campaign/image-a5170d7f-f4a8-40f7-9b29-d96c6621d712.png" className="w-20 md:w-28 drop-shadow-xl" alt="Brake" />
+          </div>
+
+          {/* Gas Pedal (Right) */}
+          <div 
+            className="absolute bottom-28 md:bottom-32 right-4 md:right-10 z-40 active:scale-95 transition-transform cursor-pointer"
+            onPointerDown={(e) => { e.preventDefault(); isMoving.current = true; }}
+            onPointerUp={(e) => { e.preventDefault(); isMoving.current = false; }}
+            onPointerLeave={(e) => { e.preventDefault(); isMoving.current = false; }}
+          >
+            <img src="https://files.ajt.my/images/marketing-campaign/image-4df2bcd4-46ad-4b91-a098-bdbbebf35f2a.png" className="w-24 md:w-32 drop-shadow-xl" alt="Gas" />
+          </div>
+        </>
       )}
 
       {/* UI Meter (Bottom) */}
