@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 interface GameProps {
   onComplete: (won: boolean) => void;
@@ -7,6 +7,7 @@ interface GameProps {
 
 export default function Game({ onComplete }: GameProps) {
   const [showTutorial, setShowTutorial] = useState(true);
+  const [countdown, setCountdown] = useState<number | string | null>(null);
   const [progress, setProgress] = useState(0); // 0 to 100
   const [fuel, setFuel] = useState(100); // 100 to 0
   const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
@@ -14,8 +15,28 @@ export default function Game({ onComplete }: GameProps) {
   const progressRef = useRef(0);
   const fuelRef = useRef(100);
   const isMoving = useRef(false);
+  const canDriveRef = useRef(false);
   const lastTime = useRef<number | null>(null);
   const frameRef = useRef<number>(0);
+
+  const startCountdown = () => {
+    setShowTutorial(false);
+    setCountdown(3);
+    canDriveRef.current = false;
+    let count = 3;
+    const interval = setInterval(() => {
+      count--;
+      if (count > 0) {
+        setCountdown(count);
+      } else if (count === 0) {
+        setCountdown('Drive!');
+      } else {
+        setCountdown(null);
+        canDriveRef.current = true;
+        clearInterval(interval);
+      }
+    }, 1000);
+  };
 
   // Trees generation
   const trees = useRef(Array.from({ length: 25 }).map((_, i) => ({
@@ -32,7 +53,7 @@ export default function Game({ onComplete }: GameProps) {
       const dt = time - lastTime.current;
       lastTime.current = time;
 
-      if (gameState === 'playing' && !showTutorial) {
+      if (gameState === 'playing' && canDriveRef.current) {
         // Fuel depletes continuously over 8 seconds (8000ms)
         const newFuel = Math.max(0, fuelRef.current - (dt / 8000) * 100);
         fuelRef.current = newFuel;
@@ -48,9 +69,11 @@ export default function Game({ onComplete }: GameProps) {
 
         // Win/Loss conditions
         if (progressRef.current >= 100) {
+          canDriveRef.current = false;
           setGameState('won');
           setTimeout(() => onComplete(true), 1500);
         } else if (fuelRef.current <= 0) {
+          canDriveRef.current = false;
           setGameState('lost');
         }
       }
@@ -60,11 +83,12 @@ export default function Game({ onComplete }: GameProps) {
 
     frameRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frameRef.current);
-  }, [gameState, showTutorial, onComplete]);
+  }, [gameState, onComplete]);
 
   // Keyboard controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!canDriveRef.current) return;
       if (e.code === 'ArrowRight' || e.code === 'Space') isMoving.current = true;
     };
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -81,7 +105,7 @@ export default function Game({ onComplete }: GameProps) {
   return (
     <div 
       className="relative w-full h-screen overflow-hidden select-none bg-sky-200"
-      onPointerDown={() => isMoving.current = true}
+      onPointerDown={() => { if (canDriveRef.current) isMoving.current = true; }}
       onPointerUp={() => isMoving.current = false}
       onPointerLeave={() => isMoving.current = false}
     >
@@ -160,6 +184,7 @@ export default function Game({ onComplete }: GameProps) {
                     fuelRef.current = 100;
                     isMoving.current = false;
                     lastTime.current = null;
+                    startCountdown();
                   }}
                   className="w-full bg-orange-500 text-white font-bold py-3 rounded-xl hover:bg-orange-600 transition-colors shadow-md"
                 >
@@ -176,6 +201,24 @@ export default function Game({ onComplete }: GameProps) {
           </motion.div>
         </div>
       )}
+
+      {/* Countdown Overlay */}
+      <AnimatePresence>
+        {countdown !== null && (
+          <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
+            <motion.div
+              key={countdown}
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1.5, opacity: 1 }}
+              exit={{ scale: 2, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="text-7xl md:text-9xl font-black text-orange-500 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] italic"
+            >
+              {countdown}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Tutorial Overlay */}
       {showTutorial && (
@@ -196,7 +239,7 @@ export default function Game({ onComplete }: GameProps) {
               <p>⛽ <strong className="text-red-600">Watch your fuel!</strong> It runs out very fast.</p>
             </div>
             <button 
-              onClick={() => setShowTutorial(false)}
+              onClick={startCountdown}
               className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-black py-4 rounded-xl text-xl hover:scale-105 transition-transform shadow-lg"
             >
               PLAY NOW
@@ -206,7 +249,7 @@ export default function Game({ onComplete }: GameProps) {
       )}
 
       {/* Tap Instruction */}
-      {progress === 0 && gameState === 'playing' && !showTutorial && (
+      {progress === 0 && gameState === 'playing' && !showTutorial && countdown === null && (
         <div className="absolute top-1/3 w-full text-center pointer-events-none animate-pulse">
           <h2 className="text-4xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
             TAP & HOLD TO DRIVE

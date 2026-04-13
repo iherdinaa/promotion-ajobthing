@@ -27,7 +27,7 @@ const Snow = () => {
         <motion.img
           key={flake.id}
           src={flake.img}
-          className="absolute top-[-50px] w-8 h-8 object-contain opacity-70"
+          className="absolute top-[-50px] w-10 h-10 md:w-12 md:h-12 object-contain opacity-70"
           style={{ left: `${flake.left}%` }}
           animate={{
             y: ["0vh", "100vh"],
@@ -113,7 +113,7 @@ export default function Homepage({ onStart }: HomepageProps) {
               transition={{ delay: 0.4 }}
               className="text-white font-bold text-sm lg:text-base bg-black/40 backdrop-blur-sm px-5 py-1.5 rounded-full border border-white/20 shadow-xl inline-block"
             >
-              14-21 April 2026
+              14-20 April 2026
             </motion.div>
           </div>
 

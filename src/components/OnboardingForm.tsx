@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 
 interface OnboardingFormProps {
-  onComplete: () => void;
+  onComplete: (data: { q1: string; q2: string; q3: string[] }) => void;
 }
 
 const Snow = () => {
@@ -27,7 +27,7 @@ const Snow = () => {
         <motion.img
           key={flake.id}
           src={flake.img}
-          className="absolute top-[-50px] w-8 h-8 object-contain opacity-70"
+          className="absolute top-[-50px] w-10 h-10 md:w-12 md:h-12 object-contain opacity-70"
           style={{ left: `${flake.left}%` }}
           animate={{
             y: ["0vh", "100vh"],
@@ -200,7 +200,12 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
         {/* Footer / Submit */}
         <div className="p-4 lg:p-6 bg-gray-50 border-t border-gray-100 flex justify-center shrink-0">
           <button
-            onClick={onComplete}
+            onClick={() => {
+              if (isFormValid()) {
+                const finalQ3 = q3.includes("Others") ? [...q3.filter(i => i !== "Others"), `Others: ${otherText}`] : q3;
+                onComplete({ q1: q1!, q2: q2 || "", q3: finalQ3 });
+              }
+            }}
             disabled={!isFormValid()}
             className={`w-full max-w-md py-3 rounded-2xl font-black text-lg tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 ${
               isFormValid()

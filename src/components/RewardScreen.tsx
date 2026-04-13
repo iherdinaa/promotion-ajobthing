@@ -28,7 +28,7 @@ const Snow = () => {
         <motion.img
           key={flake.id}
           src={flake.img}
-          className="absolute top-[-50px] w-8 h-8 object-contain opacity-70"
+          className="absolute top-[-50px] w-10 h-10 md:w-12 md:h-12 object-contain opacity-70"
           style={{ left: `${flake.left}%` }}
           animate={{
             y: ["0vh", "100vh"],
@@ -78,6 +78,7 @@ export default function RewardScreen({ onPlayAgain, gameWon }: RewardScreenProps
                 <span className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Voucher</span>
                 <img src="https://files.ajt.my/images/marketing-campaign/image-cb17ce42-da63-42a5-911c-7d12fd403cfb.png" className="h-24 object-contain drop-shadow-lg" alt="RM200 OFF" />
                 <span className="text-lg font-bold text-orange-900 mt-2">RM200 OFF AJobThing Voucher</span>
+                <span className="text-xs text-gray-500 mt-1">(Valid until 20 April 2026)</span>
               </div>
               
               <div className="w-full flex items-center gap-4 my-2">
@@ -100,6 +101,9 @@ export default function RewardScreen({ onPlayAgain, gameWon }: RewardScreenProps
             >
               Claim Free Job Ads*
             </a>
+            <p className="text-xs text-gray-500 mt-3 leading-tight">
+              To claim free job ads, please login and go to the Rewards page. Make sure you have an AJobThing account.
+            </p>
           </div>
 
           {/* Lucky Draw Ticket */}
@@ -197,7 +201,7 @@ export default function RewardScreen({ onPlayAgain, gameWon }: RewardScreenProps
       {/* Jobie Character */}
       <img 
         src="https://files.ajt.my/images/marketing-campaign/image-cbf068c6-5c4b-4e1e-b461-74618f20d795.png" 
-        className="absolute -right-4 lg:right-10 bottom-4 lg:bottom-10 h-32 lg:h-48 z-20 pointer-events-none drop-shadow-xl"
+        className="absolute -right-4 lg:right-10 bottom-4 lg:bottom-10 h-40 lg:h-64 z-20 pointer-events-none drop-shadow-xl"
         alt="Jobie"
       />
     </div>
