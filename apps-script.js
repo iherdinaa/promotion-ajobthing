@@ -12,6 +12,9 @@
 // 7. Who has access: "Anyone"
 // 8. Copy the Web App URL provided after deployment.
 // 9. Add the URL as VITE_APPSCRIPT_URL in your React app's .env file if calling directly from frontend.
+//
+// COLUMNS:
+// timestamp | company_name | email | phone | ajt_account | hiring_timeline | headcount | job_platform | special_note | utm_source | utm_medium | utm_campaign
 
 function doPost(e) {
   try {
@@ -36,21 +39,21 @@ function doPost(e) {
     
     const timestamp = new Date();
     
-    // Store according to the columns requested:
+    // Store according to the columns:
     // timestamp | company_name | email | phone | ajt_account | hiring_timeline | headcount | job_platform | special_note | utm_source | utm_medium | utm_campaign
     sheet.appendRow([
       timestamp,
-      data.companyName || '',
+      data.company_name || '',
       data.email || '',
       data.phone || '',
-      data.hasAccount || '',
-      data.hiringTimeline || '',
+      data.ajt_account || '',
+      data.hiring_timeline || '',
       data.headcount || '',
-      data.jobPlatform || '',
-      data.specialNote || '',
-      data.utmSource || '',
-      data.utmMedium || '',
-      data.utmCampaign || ''
+      data.job_platform || '',
+      data.special_note || '',
+      data.utm_source || '',
+      data.utm_medium || '',
+      data.utm_campaign || ''
     ]);
     
     return ContentService.createTextOutput(JSON.stringify({ status: 'success' }))
