@@ -9,8 +9,7 @@ import Game from "./components/Game";
 import OnboardingForm from "./components/OnboardingForm";
 import RewardScreen from "./components/RewardScreen";
 
-// Apps Script Web App URL - uses environment variable or fallback
-const SCRIPT_URL = import.meta.env.VITE_APPSCRIPT_URL || "https://script.google.com/macros/s/AKfycbzPsoQs4N5B1Qwd2IsQl_cyS6RB9X0olaqXhH9QDQLzvI_uk7x1dkW8NXSetSTgipKGIw/exec";
+
 
 export default function App() {
   const [screen, setScreen] = useState<'home' | 'game' | 'onboarding' | 'reward'>('home');
@@ -59,11 +58,12 @@ export default function App() {
     };
 
     // Send data to Google Sheets via Apps Script
+    const scriptUrl = import.meta.env.VITE_APPSCRIPT_URL;
     console.log("[v0] Submitting data to Google Sheets:", finalData);
-    console.log("[v0] Using SCRIPT_URL:", SCRIPT_URL);
+    console.log("[v0] Using VITE_APPSCRIPT_URL:", scriptUrl);
     
     try {
-      const response = await fetch(SCRIPT_URL, {
+      const response = await fetch(scriptUrl, {
         method: "POST",
         mode: "no-cors",
         body: JSON.stringify(finalData),
