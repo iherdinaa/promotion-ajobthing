@@ -2,61 +2,15 @@ import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 
 interface OnboardingFormProps {
-  onComplete: (data: { q1: string; q2: string; q3: string[] }) => void;
+  onComplete: (data: { q1: string; q2: string; q3: string[] }) => Promise<void> | void;
 }
-
-const Snow = () => {
-  const [flakes, setFlakes] = useState<{ id: number; left: number; delay: number; duration: number; img: string }[]>([]);
-
-  useEffect(() => {
-    const snowImages = [
-      "https://files.ajt.my/images/marketing-campaign/image-b5c61653-48e5-404d-aa95-da0f2ecc5351.png",
-      "https://files.ajt.my/images/marketing-campaign/image-4851506e-34bf-49a7-b5ab-ee7c373b4c23.png",
-      "https://files.ajt.my/images/marketing-campaign/image-c98293ab-72f4-44d2-b13b-69d0f4b63ee2.png",
-      "https://files.ajt.my/images/marketing-campaign/image-bf6f65c2-7bff-4e8d-975c-69e46d32ca4e.png",
-      "https://files.ajt.my/images/marketing-campaign/image-80a52377-e207-425d-9460-cdcecba8aaf6.png",
-      "https://files.ajt.my/images/marketing-campaign/image-94a8893a-6ede-43e7-9f77-d78f7ba1ccf6.png"
-    ];
-
-    const newFlakes = Array.from({ length: 30 }).map((_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 5,
-      duration: 5 + Math.random() * 5,
-      img: snowImages[Math.floor(Math.random() * snowImages.length)]
-    }));
-    setFlakes(newFlakes);
-  }, []);
-
-  return (
-    <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-      {flakes.map(flake => (
-        <motion.img
-          key={flake.id}
-          src={flake.img}
-          className="absolute top-[-50px] w-10 h-10 md:w-12 md:h-12 object-contain opacity-70"
-          style={{ left: `${flake.left}%` }}
-          animate={{
-            y: ["0vh", "100vh"],
-            rotate: [0, 360]
-          }}
-          transition={{
-            duration: flake.duration,
-            repeat: Infinity,
-            delay: flake.delay,
-            ease: "linear"
-          }}
-        />
-      ))}
-    </div>
-  );
-};
 
 export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
   const [q1, setQ1] = useState<string | null>(null);
   const [q2, setQ2] = useState<string | null>(null);
   const [q3, setQ3] = useState<string[]>([]);
   const [otherText, setOtherText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const q1Options = ["Currently hiring", "Hiring Next Month", "Hiring in 3 months", "Not yet planned"];
   const q2Options = ["1–6", "7-15", "16-30", "More than 30"];
@@ -83,9 +37,8 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
   return (
     <div 
       className="relative min-h-screen w-full bg-cover bg-center overflow-y-auto flex items-center justify-center p-4 lg:p-8"
-      style={{ backgroundImage: `url('https://files.ajt.my/images/marketing-campaign/image-ece9b57a-7abf-4331-a6c1-4f678cf72a4c.gif')` }}
+      style={{ backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-822148e6-1fa1-4830-ab09-58c4c1b0d5f4.jpg')` }}
     >
-      <Snow />
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -103,7 +56,7 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
         {/* Subheader */}
         <div className="py-3 px-4 text-center border-b border-orange-100 shrink-0 bg-orange-50/50">
           <p className="text-base lg:text-lg font-bold text-orange-800 italic">
-            "Just 3 questions to join Fuel Top Up Lucky Draw"
+            "Just 3 questions to join Lucky Draw"
           </p>
         </div>
 
@@ -207,20 +160,22 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
         {/* Footer / Submit */}
         <div className="p-4 lg:p-6 bg-gray-50 border-t border-gray-100 flex justify-center shrink-0">
           <button
-            onClick={() => {
-              if (isFormValid()) {
+            onClick={async () => {
+              if (isFormValid() && !isSubmitting) {
+                setIsSubmitting(true);
                 const finalQ3 = q3.includes("Others") ? [...q3.filter(i => i !== "Others"), `Others: ${otherText}`] : q3;
-                onComplete({ q1: q1!, q2: q2 || "", q3: finalQ3 });
+                await Promise.resolve(onComplete({ q1: q1!, q2: q2 || "", q3: finalQ3 }));
+                setIsSubmitting(false); // Can be kept or unmounted if parent handles navigation immediately
               }
             }}
-            disabled={!isFormValid()}
+            disabled={!isFormValid() || isSubmitting}
             className={`w-full max-w-md py-3 rounded-2xl font-black text-lg tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 ${
-              isFormValid()
+              isFormValid() && !isSubmitting
                 ? 'bg-gradient-to-r from-orange-400 to-orange-500 text-white hover:scale-105 hover:shadow-orange-500/30 cursor-pointer'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
             }`}
           >
-            REVEAL REWARD ⚡
+            {isSubmitting ? "LOADING..." : "REVEAL REWARD ⚡"}
           </button>
         </div>
 
