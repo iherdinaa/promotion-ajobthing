@@ -124,7 +124,7 @@ export default function Game({ onComplete }: GameProps) {
             </motion.div>
           </div>
         );
-      })()
+      })()}
 
       {/* Tutorial Overlay */}
       {gameState === 'tutorial' && (
