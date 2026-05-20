@@ -9,17 +9,19 @@ export default function Game({ onComplete }: GameProps) {
   const [gameState, setGameState] = useState<'tutorial' | 'spinning' | 'stopping' | 'done'>('tutorial');
   const controls = useAnimation();
   const currentAngle = useRef(0);
+  const spinStartAngle = useRef(0);
+  const animationStartTime = useRef(0);
 
   const startSpin = () => {
     setGameState('spinning');
-    
-    // Animate spinning fast
+    spinStartAngle.current = currentAngle.current;
+    animationStartTime.current = Date.now();
+
     controls.start({
-      rotate: [0, 360],
+      rotate: currentAngle.current + 360 * 100,
       transition: {
         ease: "linear",
-        duration: 4,
-        repeat: Infinity
+        duration: 400,
       }
     });
   };
@@ -28,22 +30,39 @@ export default function Game({ onComplete }: GameProps) {
     setGameState('stopping');
     controls.stop();
 
+    // Calculate how far the wheel has rotated since spin started
+    const elapsed = (Date.now() - animationStartTime.current) / 1000;
+    const degreesPerSecond = 90; // linear spin speed
+    const rotatedSoFar = (spinStartAngle.current + elapsed * degreesPerSecond) % 360;
+    currentAngle.current = rotatedSoFar;
+
     const today = new Date().getUTCDate();
-    let targetOffset = 0;
-    if (today === 19) targetOffset = 45; 
-    else if (today === 20) targetOffset = 135; 
-    else if (today === 21) targetOffset = 225; 
-    else if (today === 22) targetOffset = 315; 
-    else if (today === 25) targetOffset = 60; 
-    else targetOffset = 0; 
+
+    // Each segment occupies 72 degrees (360 / 5 segments).
+    // Segment target angles (where arrow at top = 0 degrees points to that segment):
+    // Measure from wheel image: TnGO segment center is at ~288 degrees offset
+    // The wheel stops when: (finalAngle % 360) === segmentCenter
+    // We add extra full rotations (3x) so the deceleration looks natural.
+    let segmentAngle = 0;
+    if (today === 19) segmentAngle = 36;       // Grabgift Chicken
+    else if (today === 20) segmentAngle = 288;  // TnGO
+    else if (today === 21) segmentAngle = 108;  // Grabgift Chagee
+    else if (today === 22) segmentAngle = 180;  // Grabgift Burger
+    else if (today === 25) segmentAngle = 0;    // Grabgift Beautea
+    else segmentAngle = 0;
+
+    // Calculate how many degrees are needed from current position to reach the target segment
+    const diff = (segmentAngle - (rotatedSoFar % 360) + 360) % 360;
+    const finalAngle = rotatedSoFar + 360 * 3 + diff;
 
     controls.start({
-      rotate: 360 * 3 + targetOffset, 
+      rotate: finalAngle,
       transition: {
         ease: "circOut",
         duration: 4
       }
     }).then(() => {
+      currentAngle.current = finalAngle % 360;
       setTimeout(() => {
         setGameState('done');
       }, 500);
@@ -91,31 +110,40 @@ export default function Game({ onComplete }: GameProps) {
       )}
 
       {/* Done / Reward Popup */}
-      {gameState === 'done' && (
-        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm px-4">
-          <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white p-8 rounded-3xl text-center shadow-2xl max-w-md w-[90%] border-4 border-yellow-400 flex flex-col items-center"
-          >
-            <h2 className="text-3xl font-black text-orange-500 mb-2 leading-tight">Congrats!</h2>
-            <p className="text-lg text-gray-700 font-bold mb-6">You get Grabgift Lucky draw</p>
-            
-            <img 
-              src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-3c55e304-2eb4-40c6-bb11-628b97fca28c.png" 
-              alt="Grabgift Reward" 
-              className="w-48 h-auto object-contain mb-8 drop-shadow-lg"
-            />
+      {gameState === 'done' && (() => {
+        const today = new Date().getUTCDate();
+        const isTngoDay = today === 20;
+        const rewardLabel = isTngoDay ? "You get TnGo reward" : "You get Grabgift Lucky draw";
+        const rewardImg = isTngoDay
+          ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-4JaYKs2QN3NiHeXjtLyPyv1876S2MX.png"
+          : "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-3c55e304-2eb4-40c6-bb11-628b97fca28c.png";
 
-            <button 
-              onClick={() => onComplete(true)}
-              className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-black py-4 rounded-xl text-xl hover:scale-105 transition-transform shadow-lg border border-orange-300"
+        return (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm px-4">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white p-8 rounded-3xl text-center shadow-2xl max-w-md w-[90%] border-4 border-yellow-400 flex flex-col items-center"
             >
-              CLAIM NOW
-            </button>
-          </motion.div>
-        </div>
-      )}
+              <h2 className="text-3xl font-black text-orange-500 mb-2 leading-tight">Congrats!</h2>
+              <p className="text-lg text-gray-700 font-bold mb-6">{rewardLabel}</p>
+              
+              <img 
+                src={rewardImg}
+                alt="Reward"
+                className="w-48 h-auto object-contain mb-8 drop-shadow-lg"
+              />
+
+              <button 
+                onClick={() => onComplete(true)}
+                className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-black py-4 rounded-xl text-xl hover:scale-105 transition-transform shadow-lg border border-orange-300"
+              >
+                CLAIM NOW
+              </button>
+            </motion.div>
+          </div>
+        );
+      })()}
 
       {/* Tutorial Overlay */}
       {gameState === 'tutorial' && (
