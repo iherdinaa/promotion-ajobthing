@@ -9,17 +9,19 @@ export default function Game({ onComplete }: GameProps) {
   const [gameState, setGameState] = useState<'tutorial' | 'spinning' | 'stopping' | 'done'>('tutorial');
   const controls = useAnimation();
   const currentAngle = useRef(0);
+  const spinStartAngle = useRef(0);
+  const animationStartTime = useRef(0);
 
   const startSpin = () => {
     setGameState('spinning');
-    
-    // Animate spinning fast
+    spinStartAngle.current = currentAngle.current;
+    animationStartTime.current = Date.now();
+
     controls.start({
-      rotate: [0, 360],
+      rotate: currentAngle.current + 360 * 100,
       transition: {
         ease: "linear",
-        duration: 4,
-        repeat: Infinity
+        duration: 400,
       }
     });
   };
@@ -28,22 +30,39 @@ export default function Game({ onComplete }: GameProps) {
     setGameState('stopping');
     controls.stop();
 
+    // Calculate how far the wheel has rotated since spin started
+    const elapsed = (Date.now() - animationStartTime.current) / 1000;
+    const degreesPerSecond = 90; // linear spin speed
+    const rotatedSoFar = (spinStartAngle.current + elapsed * degreesPerSecond) % 360;
+    currentAngle.current = rotatedSoFar;
+
     const today = new Date().getUTCDate();
-    let targetOffset = 0;
-    if (today === 19) targetOffset = 45; 
-    else if (today === 20) targetOffset = 135; 
-    else if (today === 21) targetOffset = 225; 
-    else if (today === 22) targetOffset = 315; 
-    else if (today === 25) targetOffset = 60; 
-    else targetOffset = 0; 
+
+    // Each segment occupies 72 degrees (360 / 5 segments).
+    // Segment target angles (where arrow at top = 0 degrees points to that segment):
+    // Measure from wheel image: TnGO segment center is at ~288 degrees offset
+    // The wheel stops when: (finalAngle % 360) === segmentCenter
+    // We add extra full rotations (3x) so the deceleration looks natural.
+    let segmentAngle = 0;
+    if (today === 19) segmentAngle = 36;       // Grabgift Chicken
+    else if (today === 20) segmentAngle = 288;  // TnGO
+    else if (today === 21) segmentAngle = 108;  // Grabgift Chagee
+    else if (today === 22) segmentAngle = 180;  // Grabgift Burger
+    else if (today === 25) segmentAngle = 0;    // Grabgift Beautea
+    else segmentAngle = 0;
+
+    // Calculate how many degrees are needed from current position to reach the target segment
+    const diff = (segmentAngle - (rotatedSoFar % 360) + 360) % 360;
+    const finalAngle = rotatedSoFar + 360 * 3 + diff;
 
     controls.start({
-      rotate: 360 * 3 + targetOffset, 
+      rotate: finalAngle,
       transition: {
         ease: "circOut",
         duration: 4
       }
     }).then(() => {
+      currentAngle.current = finalAngle % 360;
       setTimeout(() => {
         setGameState('done');
       }, 500);
