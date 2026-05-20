@@ -71,13 +71,13 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
     isTngo = true;
     treatTitle = "TnGO Reward";
     treatImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-01b86c06-deab-4dd3-9d33-72439db4f85d.png";
-    if (headcount === '1-6') {
+    if (headcount === '1–6' || headcount === '1-6') {
       voucherTitle = "RM288 OFF AJobThing Voucher";
       voucherImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-b0e8c425-8526-4503-b571-1ed6fb10ae8a.png";
     } else if (headcount === '7-15' || headcount === '16-30') {
       voucherTitle = "RM588 OFF AJobThing Voucher";
       voucherImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-96295f5a-4932-41bb-9946-7d11d9c8b854.png";
-    } else {
+    } else if (headcount === 'More than 30') {
       voucherTitle = "RM988 OFF AJobThing Voucher";
       voucherImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-ea5a31d7-3fd9-4a43-a6d6-55e53461fa25.png";
     }
@@ -233,7 +233,7 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-white rounded-3xl p-8 max-w-sm w-full text-center relative shadow-2xl flex flex-col items-center justify-center h-[400px]"
+              className="bg-white rounded-3xl p-6 max-w-md w-full text-center relative shadow-2xl flex flex-col items-center justify-center"
             >
               {!tngoExpired && (
                 <button 
@@ -248,7 +248,7 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
                   <div className="w-full bg-blue-50 rounded-xl p-4 flex items-center justify-center border-2 border-blue-200 mb-4">
                     <img
                       src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-95f8e2d0-0dc1-4af5-a53b-209a52285f5f.jpg"
-                      className="w-64 h-64 object-contain"
+                      className="w-80 h-80 object-contain"
                       alt="TnGO QR Code"
                     />
                   </div>

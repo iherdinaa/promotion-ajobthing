@@ -96,7 +96,7 @@ export default function Game({ onComplete }: GameProps) {
         const isTngoDay = today === 20;
         const rewardLabel = isTngoDay ? "You get TnGo reward" : "You get Grabgift Lucky draw";
         const rewardImg = isTngoDay
-          ? "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-01b86c06-deab-4dd3-9d33-72439db4f85d.png"
+          ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-4JaYKs2QN3NiHeXjtLyPyv1876S2MX.png"
           : "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-3c55e304-2eb4-40c6-bb11-628b97fca28c.png";
 
         return (
