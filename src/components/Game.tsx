@@ -91,31 +91,40 @@ export default function Game({ onComplete }: GameProps) {
       )}
 
       {/* Done / Reward Popup */}
-      {gameState === 'done' && (
-        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm px-4">
-          <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white p-8 rounded-3xl text-center shadow-2xl max-w-md w-[90%] border-4 border-yellow-400 flex flex-col items-center"
-          >
-            <h2 className="text-3xl font-black text-orange-500 mb-2 leading-tight">Congrats!</h2>
-            <p className="text-lg text-gray-700 font-bold mb-6">You get Grabgift Lucky draw</p>
-            
-            <img 
-              src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-3c55e304-2eb4-40c6-bb11-628b97fca28c.png" 
-              alt="Grabgift Reward" 
-              className="w-48 h-auto object-contain mb-8 drop-shadow-lg"
-            />
+      {gameState === 'done' && (() => {
+        const today = new Date().getUTCDate();
+        const isTngoDay = today === 20;
+        const rewardLabel = isTngoDay ? "You get TnGo reward" : "You get Grabgift Lucky draw";
+        const rewardImg = isTngoDay
+          ? "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-01b86c06-deab-4dd3-9d33-72439db4f85d.png"
+          : "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-3c55e304-2eb4-40c6-bb11-628b97fca28c.png";
 
-            <button 
-              onClick={() => onComplete(true)}
-              className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-black py-4 rounded-xl text-xl hover:scale-105 transition-transform shadow-lg border border-orange-300"
+        return (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm px-4">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white p-8 rounded-3xl text-center shadow-2xl max-w-md w-[90%] border-4 border-yellow-400 flex flex-col items-center"
             >
-              CLAIM NOW
-            </button>
-          </motion.div>
-        </div>
-      )}
+              <h2 className="text-3xl font-black text-orange-500 mb-2 leading-tight">Congrats!</h2>
+              <p className="text-lg text-gray-700 font-bold mb-6">{rewardLabel}</p>
+              
+              <img 
+                src={rewardImg}
+                alt="Reward"
+                className="w-48 h-auto object-contain mb-8 drop-shadow-lg"
+              />
+
+              <button 
+                onClick={() => onComplete(true)}
+                className="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-black py-4 rounded-xl text-xl hover:scale-105 transition-transform shadow-lg border border-orange-300"
+              >
+                CLAIM NOW
+              </button>
+            </motion.div>
+          </div>
+        );
+      })()
 
       {/* Tutorial Overlay */}
       {gameState === 'tutorial' && (

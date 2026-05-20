@@ -70,7 +70,7 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
   } else if (today === 20) {
     isTngo = true;
     treatTitle = "TnGO Reward";
-    treatImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-95f8e2d0-0dc1-4af5-a53b-209a52285f5f.jpg";
+    treatImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-01b86c06-deab-4dd3-9d33-72439db4f85d.png";
     if (headcount === '1-6') {
       voucherTitle = "RM288 OFF AJobThing Voucher";
       voucherImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-b0e8c425-8526-4503-b571-1ed6fb10ae8a.png";
@@ -140,7 +140,7 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
                 <span className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Voucher</span>
                 <img src={voucherImg} className="h-40 object-contain drop-shadow-lg" alt={voucherTitle} />
                 <span className="text-lg font-bold text-orange-900 mt-2">{voucherTitle}</span>
-                <span className="text-xs text-gray-500 mt-1">(*Expired before 26 May 2026)</span>
+                <span className="text-xs text-red-500 font-semibold mt-1">*Expired before 26 May 2026</span>
               </div>
             </div>
           </div>
@@ -243,9 +243,22 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
               )}
               
               <h2 className="text-2xl font-black text-blue-600 mb-2">Scan Now!</h2>
-              {tngoExpired ? (
-                <div className="flex flex-col items-center py-10">
-                  <span className="text-6xl mb-4">⏱️</span>
+              {!tngoExpired ? (
+                <>
+                  <div className="w-full bg-blue-50 rounded-xl p-4 flex items-center justify-center border-2 border-blue-200 mb-4">
+                    <img
+                      src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-95f8e2d0-0dc1-4af5-a53b-209a52285f5f.jpg"
+                      className="w-64 h-64 object-contain"
+                      alt="TnGO QR Code"
+                    />
+                  </div>
+                  <p className="text-red-500 font-bold text-xl drop-shadow-sm mb-2">
+                    Closes in: {tngoTimeLeft}s
+                  </p>
+                  <p className="text-sm text-gray-500">Scan fast using your TnGO app!</p>
+                </>
+              ) : (
+                <div className="flex flex-col items-center py-6">
                   <p className="text-red-500 font-bold text-lg px-4">Time is up! You cannot scan anymore.</p>
                   <button 
                     onClick={() => setShowTngoPopup(false)}
@@ -254,17 +267,6 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
                     Close
                   </button>
                 </div>
-              ) : (
-                <>
-                  <div className="w-full bg-blue-50 rounded-xl p-4 flex items-center justify-center border-2 border-blue-200 mb-4 h-[200px]">
-                    {/* Placeholder for actual QR code, we just display the logo large here per instructions until QR is provided */}
-                    <img src={treatImg} className="w-32 h-32 object-cover rounded-full shadow-inner" alt="TnGO QR Placehoder" />
-                  </div>
-                  <p className="text-red-500 font-bold text-xl drop-shadow-sm mb-2">
-                    Closes in: {tngoTimeLeft}s
-                  </p>
-                  <p className="text-sm text-gray-500">Scan fast using your TnGO app!</p>
-                </>
               )}
             </motion.div>
           </div>
