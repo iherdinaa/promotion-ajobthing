@@ -54,6 +54,7 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
   const [showTngoPopup, setShowTngoPopup] = useState(false);
   const [tngoTimeLeft, setTngoTimeLeft] = useState(10);
   const [tngoExpired, setTngoExpired] = useState(false);
+  const [tngoScanned, setTngoScanned] = useState(false);
 
   const today = new Date().getUTCDate(); // e.g. 19, 20, 21, 22, 25
 
@@ -69,7 +70,7 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
   } else if (today === 20) {
     isTngo = true;
     treatTitle = "TnGO Reward";
-    treatImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-01b86c06-deab-4dd3-9d33-72439db4f85d.png";
+    treatImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-95f8e2d0-0dc1-4af5-a53b-209a52285f5f.jpg";
     if (headcount === '1-6') {
       voucherTitle = "RM288 OFF AJobThing Voucher";
       voucherImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-b0e8c425-8526-4503-b571-1ed6fb10ae8a.png";
@@ -147,7 +148,7 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
           {/* Special Treat */}
           <div className={`bg-orange-50 rounded-2xl p-6 border-2 border-orange-200 flex flex-col items-center text-center ${!gameWon ? 'bg-gray-50 border-gray-200' : ''}`}>
             <h3 className={`text-xl font-black mb-6 ${gameWon ? 'text-orange-800' : 'text-gray-600'}`}>
-              {gameWon ? '1 Free Treat Lucky Draw' : 'No Free Treat Lucky Draw'}
+              {gameWon ? (today === 20 ? 'Free Treat for You' : '1 Free Treat Lucky Draw') : 'No Free Treat Lucky Draw'}
             </h3>
             
             <div className="flex flex-col items-center gap-4 mb-6 flex-1 justify-center relative w-full h-full">
@@ -156,15 +157,26 @@ export default function RewardScreen({ onPlayAgain, gameWon, headcount }: Reward
                 {gameWon && <div className="absolute inset-0 bg-orange-400/20 blur-xl rounded-full"></div>}
                 {isTngo && gameWon ? (
                   <button 
-                    onClick={() => setShowTngoPopup(true)} 
-                    className="relative z-10 transition-transform hover:scale-105"
+                    onClick={() => {
+                      if (!tngoScanned) {
+                        setTngoScanned(true);
+                        setShowTngoPopup(true);
+                      }
+                    }}
+                    disabled={tngoScanned}
+                    className={`relative z-10 flex flex-col items-center transition-transform ${tngoScanned ? 'opacity-40 grayscale cursor-not-allowed' : 'hover:scale-105'}`}
                   >
                     <img 
                       src={treatImg} 
                       className="relative h-40 object-contain drop-shadow-xl z-10" 
                       alt={treatTitle} 
                     />
-                    <div className="bg-blue-600 text-white font-bold text-xs py-1 px-3 rounded-full mt-2 inline-block shadow-md">Click to Scan</div>
+                    <div className={`font-bold text-xs py-1 px-3 rounded-full mt-2 inline-block shadow-md ${tngoScanned ? 'bg-gray-400 text-white' : 'bg-blue-600 text-white'}`}>
+                      {tngoScanned ? 'Scanned' : 'Click to Scan'}
+                    </div>
+                    {!tngoScanned && (
+                      <p className="text-xs text-gray-500 mt-1 font-medium">You have 10 seconds to scan, prepare your phone first.</p>
+                    )}
                   </button>
                 ) : (
                   <img 
