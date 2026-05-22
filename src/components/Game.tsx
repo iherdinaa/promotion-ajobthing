@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, useAnimation, useMotionValue } from "motion/react";
 
 interface GameProps {
@@ -10,10 +10,30 @@ export default function Game({ onComplete }: GameProps) {
   const controls = useAnimation();
   const rotateValue = useMotionValue(0);
   const totalRotation = useRef(0);
+  const rafRef = useRef<number | null>(null);
+
+  // Track rotation in real-time via rAF so controls.stop() doesn't lose the current angle
+  const startTracking = () => {
+    const tick = () => {
+      totalRotation.current = rotateValue.get();
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  };
+
+  const stopTracking = () => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  };
+
+  useEffect(() => () => stopTracking(), []);
 
   const startSpin = () => {
     setGameState('spinning');
     const current = totalRotation.current;
+    startTracking();
 
     controls.start({
       rotate: current + 360 * 100,
@@ -26,27 +46,31 @@ export default function Game({ onComplete }: GameProps) {
 
   const pauseSpin = () => {
     setGameState('stopping');
+    // Snapshot the real current angle BEFORE stopping the animation
+    const current = totalRotation.current;
     controls.stop();
+    stopTracking();
 
-    // Read the real current angle directly from the motionValue
-    const current = rotateValue.get();
-    totalRotation.current = current;
     const currentMod = ((current % 360) + 360) % 360;
 
     const today = new Date().getUTCDate();
 
-    // Segment angles calibrated from wheel image (arrow at top = 0).
-    // Wheel has 5 segments. Segments confirmed by testing:
+    // Segment layout confirmed from wheel image (arrow at top = 0 deg):
+    // The wheel has 10 segments (5 pairs). Each segment = 36 deg.
+    // Observed: angle=72 lands on TnGO, so TnGO centre = 72 deg visually.
+    // Burger is one segment clockwise from TnGO on the wheel image.
+    // Each full segment = 36 deg, so Burger = 72 + 36 = 108.
+    // Full mapping (36 deg per segment):
+    //   Burger   = 108
+    //   TnGO     = 72  (confirmed by testing)
+    //   Chagee   = 216  (previously confirmed)
+    //   Chicken  = 144  (previously set)
     //   Beautea  = 0
-    //   Chicken  = 72
-    //   Burger   = 144  ... was landing on Beautea, so shift +72 -> 216? No.
-    // Since 144 was landing on Beautea (0), actual burger is at 72 (one step from Beautea).
-    // Re-map based on observed behaviour: Beautea=0, Burger=72, Chicken=144, Chagee=216, TnGO=288
     let segmentAngle = 0;
     if (today === 19) segmentAngle = 144;      // Grabgift Chicken
-    else if (today === 20) segmentAngle = 288;  // TnGO
+    else if (today === 20) segmentAngle = 72;   // TnGO (confirmed working)
     else if (today === 21) segmentAngle = 216;  // Grabgift Chagee
-    else if (today === 22) segmentAngle = 72;   // Grabgift Burger
+    else if (today === 22) segmentAngle = 108;  // Grabgift Burger
     else if (today === 25) segmentAngle = 0;    // Grabgift Beautea
     else segmentAngle = 0;
 
@@ -92,9 +116,6 @@ export default function Game({ onComplete }: GameProps) {
           animate={controls}
           initial={{ rotate: 0 }}
           style={{ rotate: rotateValue }}
-          onUpdate={(latest) => {
-            if (typeof latest.rotate === 'number') rotateValue.set(latest.rotate);
-          }}
           src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-496956f5-d4c0-4c31-80c3-5fefc66497fc.png"
           className="w-full h-full object-contain z-10 drop-shadow-2xl"
           alt="Wheel"
