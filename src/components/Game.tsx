@@ -58,10 +58,9 @@ export default function Game({ onComplete }: GameProps) {
     // Segment layout confirmed from wheel image (arrow at top = 0 deg):
     // The wheel has 10 segments (5 pairs). Each segment = 36 deg.
     // Observed: angle=72 lands on TnGO, so TnGO centre = 72 deg visually.
-    // Burger is one segment clockwise from TnGO on the wheel image.
-    // Each full segment = 36 deg, so Burger = 72 + 36 = 108.
-    // Full mapping (36 deg per segment):
-    //   Burger   = 108
+    // Burger is slightly offset from exact 36-deg boundaries.
+    // Full mapping (calibrated from testing):
+    //   Burger   = 86
     //   TnGO     = 72  (confirmed by testing)
     //   Chagee   = 216  (previously confirmed)
     //   Chicken  = 144  (previously set)
@@ -70,7 +69,7 @@ export default function Game({ onComplete }: GameProps) {
     if (today === 19) segmentAngle = 144;      // Grabgift Chicken
     else if (today === 20) segmentAngle = 72;   // TnGO (confirmed working)
     else if (today === 21) segmentAngle = 216;  // Grabgift Chagee
-    else if (today === 22) segmentAngle = 108;  // Grabgift Burger
+    else if (today === 22) segmentAngle = 86;   // Grabgift Burger
     else if (today === 25) segmentAngle = 0;    // Grabgift Beautea
     else segmentAngle = 0;
 
