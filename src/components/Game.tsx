@@ -60,7 +60,7 @@ export default function Game({ onComplete }: GameProps) {
     // Observed: angle=72 lands on TnGO, so TnGO centre = 72 deg visually.
     // Burger is slightly offset from exact 36-deg boundaries.
     // Full mapping (calibrated from testing):
-    //   Burger   = 86
+    //   Burger   = 56
     //   TnGO     = 72  (confirmed by testing)
     //   Chagee   = 216  (previously confirmed)
     //   Chicken  = 144  (previously set)
@@ -69,7 +69,7 @@ export default function Game({ onComplete }: GameProps) {
     if (today === 19) segmentAngle = 144;      // Grabgift Chicken
     else if (today === 20) segmentAngle = 72;   // TnGO (confirmed working)
     else if (today === 21) segmentAngle = 216;  // Grabgift Chagee
-    else if (today === 22) segmentAngle = 86;   // Grabgift Burger
+    else if (today === 22) segmentAngle = 56;   // Grabgift Burger
     else if (today === 25) segmentAngle = 0;    // Grabgift Beautea
     else segmentAngle = 0;
 
