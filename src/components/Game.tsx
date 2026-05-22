@@ -57,7 +57,7 @@ export default function Game({ onComplete }: GameProps) {
 
     // Segment layout confirmed from wheel image (arrow at top = 0 deg):
     // Angle mapping (calibrated from testing):
-    //   Burger   = -30
+    //   Burger   = -40
     //   Beautea  = 0
     //   Chicken  = 144
     //   TnGO     = 72, 86, 108
@@ -67,7 +67,7 @@ export default function Game({ onComplete }: GameProps) {
     if (today === 19) segmentAngle = 144;      // Grabgift Chicken
     else if (today === 20) segmentAngle = 72;   // TnGO (confirmed working)
     else if (today === 21) segmentAngle = 216;  // Grabgift Chagee
-    else if (today === 22) segmentAngle = -30;  // Grabgift Burger
+    else if (today === 22) segmentAngle = -40;  // Grabgift Burger
     else if (today === 25) segmentAngle = 0;    // Grabgift Beautea
     else segmentAngle = 0;
 
