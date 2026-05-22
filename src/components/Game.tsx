@@ -47,7 +47,7 @@ export default function Game({ onComplete }: GameProps) {
     if (today === 19) segmentAngle = 36;       // Grabgift Chicken
     else if (today === 20) segmentAngle = 288;  // TnGO
     else if (today === 21) segmentAngle = 216;  // Grabgift Chagee
-    else if (today === 22) segmentAngle = 180;  // Grabgift Burger
+    else if (today === 22) segmentAngle = 144;  // Grabgift Burger
     else if (today === 25) segmentAngle = 0;    // Grabgift Beautea
     else segmentAngle = 0;
 
@@ -115,7 +115,7 @@ export default function Game({ onComplete }: GameProps) {
         const isTngoDay = today === 20;
         const rewardLabel = isTngoDay ? "You get TnGo reward" : "You get Grabgift Lucky draw";
 
-        let rewardImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-af9cab16-25a1-4a42-bc6e-3e4bd6961579.png"; // Chagee (default for non-TnGO)
+        let rewardImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-08fa14e8-8c3a-477e-bdc4-d3e0a346a21e.png"; // Burger (default for non-TnGO)
         if (isTngoDay) {
           rewardImg = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-4JaYKs2QN3NiHeXjtLyPyv1876S2MX.png";
         }
