@@ -139,6 +139,8 @@ export default function Game({ onComplete }: GameProps) {
         let rewardImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-08fa14e8-8c3a-477e-bdc4-d3e0a346a21e.png"; // Burger (default for non-TnGO)
         if (isTngoDay) {
           rewardImg = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-4JaYKs2QN3NiHeXjtLyPyv1876S2MX.png";
+        } else if (today === 25) {
+          rewardImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-7d765751-c0ca-48bd-a0ce-3d8fb5e656eb.png";
         }
 
         return (
