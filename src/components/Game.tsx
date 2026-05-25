@@ -58,7 +58,7 @@ export default function Game({ onComplete }: GameProps) {
     // Segment layout confirmed from wheel image (arrow at top = 0 deg):
     // Angle mapping (calibrated from testing):
     //   Burger   = 56, 26
-    //   Beautea  = 97
+    //   Beautea  =120
     //   Chicken  = 144
     //   TnGO     = 72, 86, 108
     //   Chagee   = 216
