@@ -68,7 +68,7 @@ export default function Game({ onComplete }: GameProps) {
     else if (today === 20) segmentAngle = 72;   // TnGO (confirmed working)
     else if (today === 21) segmentAngle = 216;  // Grabgift Chagee
     else if (today === 22) segmentAngle = 56;   // Grabgift Burger
-    else if (today === 25) segmentAngle = 97;   // Grabgift Beautea
+    else if (today === 25) segmentAngle =80;   // Grabgift Beautea
     else segmentAngle = 0;
 
     const diff = (segmentAngle - currentMod + 360) % 360;
