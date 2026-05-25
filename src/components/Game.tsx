@@ -57,8 +57,8 @@ export default function Game({ onComplete }: GameProps) {
 
     // Segment layout confirmed from wheel image (arrow at top = 0 deg):
     // Angle mapping (calibrated from testing):
-    //   Burger   = -40
-    //   Beautea  = 0
+    //   Burger   = 56, 26
+    //   Beautea  = 125
     //   Chicken  = 144
     //   TnGO     = 72, 86, 108
     //   Chagee   = 216
@@ -67,8 +67,8 @@ export default function Game({ onComplete }: GameProps) {
     if (today === 19) segmentAngle = 144;      // Grabgift Chicken
     else if (today === 20) segmentAngle = 72;   // TnGO (confirmed working)
     else if (today === 21) segmentAngle = 216;  // Grabgift Chagee
-    else if (today === 22) segmentAngle = -40;  // Grabgift Burger
-    else if (today === 25) segmentAngle = 0;    // Grabgift Beautea
+    else if (today === 22) segmentAngle = 56;   // Grabgift Burger
+    else if (today === 25) segmentAngle = 125;  // Grabgift Beautea
     else segmentAngle = 0;
 
     const diff = (segmentAngle - currentMod + 360) % 360;
@@ -139,6 +139,8 @@ export default function Game({ onComplete }: GameProps) {
         let rewardImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-08fa14e8-8c3a-477e-bdc4-d3e0a346a21e.png"; // Burger (default for non-TnGO)
         if (isTngoDay) {
           rewardImg = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-4JaYKs2QN3NiHeXjtLyPyv1876S2MX.png";
+        } else if (today === 25) {
+          rewardImg = "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-7d765751-c0ca-48bd-a0ce-3d8fb5e656eb.png";
         }
 
         return (
