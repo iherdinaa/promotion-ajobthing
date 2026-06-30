@@ -49,7 +49,7 @@ export default function Homepage({ onStart }: HomepageProps) {
   return (
     <div 
       className="relative min-h-screen lg:h-screen w-full bg-cover bg-center overflow-y-auto lg:overflow-hidden flex items-start lg:items-center justify-center pt-14 pb-8 lg:py-0"
-      style={{ backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-40ffeae5-60cf-4bf1-aaf8-b69e0da914c3.png')` }}
+      style={{ backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-2119b2db-1800-41bf-a73e-66333d6cdd5d.jpg')` }}
     >
       <Confetti width={width} height={height} numberOfPieces={80} gravity={0.05} />
       <img 
