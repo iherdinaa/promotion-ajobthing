@@ -37,21 +37,24 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
   return (
     <div 
       className="relative min-h-screen w-full bg-cover bg-center overflow-y-auto flex items-center justify-center p-4 lg:p-8"
-      style={{ backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-822148e6-1fa1-4830-ab09-58c4c1b0d5f4.jpg')` }}
+      style={{ backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-2b000396-7176-43c9-8b42-d478d8d9aa6d.jpg')` }}
     >
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-yellow-400 flex flex-col"
+        className="relative z-10 bg-[repeating-linear-gradient(45deg,#ef4444,#ef4444_20px,#dc2626_20px,#dc2626_40px)] rounded-3xl p-2 lg:p-3 shadow-[0_0_50px_rgba(234,179,8,0.5)] border-4 lg:border-8 border-yellow-400 flex flex-col"
         style={{ width: '1051.56px', height: '641.05px', maxWidth: '100%' }}
       >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 py-4 px-4 text-center shrink-0">
-          <h1 className="text-2xl lg:text-4xl font-black text-white tracking-wide uppercase drop-shadow-md">
-            Claim Your Rewards
-          </h1>
-        </div>
+        <div className="absolute inset-0 border-[4px] lg:border-[6px] border-dotted border-yellow-200 rounded-2xl opacity-80 pointer-events-none"></div>
+
+        <div className="bg-white rounded-2xl w-full h-full z-10 relative border-2 lg:border-4 border-yellow-300 shadow-inner flex flex-col overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-yellow-300 to-yellow-500 border-b-4 border-yellow-600 py-4 px-4 text-center shrink-0">
+            <h1 className="text-2xl lg:text-4xl font-black text-red-600 tracking-wide uppercase drop-shadow-sm font-sans">
+              🎪 Claim Your Rewards 🎪
+            </h1>
+          </div>
         
         {/* Subheader */}
         <div className="py-3 px-4 text-center border-b border-orange-100 shrink-0 bg-orange-50/50">
@@ -177,6 +180,7 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
           >
             {isSubmitting ? "LOADING..." : "REVEAL REWARD ⚡"}
           </button>
+        </div>
         </div>
 
       </motion.div>
