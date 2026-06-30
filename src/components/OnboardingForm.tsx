@@ -37,7 +37,7 @@ export default function OnboardingForm({ onComplete }: OnboardingFormProps) {
   return (
     <div 
       className="relative min-h-screen w-full bg-cover bg-center overflow-y-auto flex items-center justify-center p-4 lg:p-8"
-      style={{ backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-2b000396-7176-43c9-8b42-d478d8d9aa6d.jpg')` }}
+      style={{ backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-40ffeae5-60cf-4bf1-aaf8-b69e0da914c3.png')` }}
     >
       
       <motion.div 

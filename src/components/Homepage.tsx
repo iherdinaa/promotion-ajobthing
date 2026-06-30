@@ -49,7 +49,7 @@ export default function Homepage({ onStart }: HomepageProps) {
   return (
     <div 
       className="relative min-h-screen lg:h-screen w-full bg-cover bg-center overflow-y-auto lg:overflow-hidden flex items-start lg:items-center justify-center pt-14 pb-8 lg:py-0"
-      style={{ backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-2b000396-7176-43c9-8b42-d478d8d9aa6d.jpg')` }}
+      style={{ backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-40ffeae5-60cf-4bf1-aaf8-b69e0da914c3.png')` }}
     >
       <Confetti width={width} height={height} numberOfPieces={80} gravity={0.05} />
       <img 
@@ -104,7 +104,7 @@ export default function Homepage({ onStart }: HomepageProps) {
               <div className="relative flex-shrink-0">
                 <div className="absolute inset-0 bg-blue-400/20 blur-xl rounded-full"></div>
                 <img 
-                  src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-ffc848ad-b0f6-4fb5-93e7-b9b0b6313978.png" 
+                  src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-3b14d0e8-ef24-45d6-897c-eaf15d9f9fec.png" 
                   className="relative h-20 lg:h-24 object-contain hover:scale-110 transition-transform drop-shadow-xl z-10" 
                   alt="TnGo Reward"
                 />
