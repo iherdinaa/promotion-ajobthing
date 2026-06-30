@@ -59,7 +59,7 @@ export default function Game({ onComplete }: GameProps) {
     <div 
       className="relative min-h-screen w-full flex flex-col items-center justify-center p-4 bg-cover bg-center overflow-y-auto"
       style={{ 
-        backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-2b000396-7176-43c9-8b42-d478d8d9aa6d.jpg')`
+        backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-2119b2db-1800-41bf-a73e-66333d6cdd5d.jpg')`
       }}
     >
       {gameState === 'selection' && <Confetti width={width} height={height} numberOfPieces={200} gravity={0.1} />}
