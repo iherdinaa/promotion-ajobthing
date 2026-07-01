@@ -14,7 +14,7 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPsoQs4N5B1Qwd2IsQl
 
 export default function App() {
   const [screen, setScreen] = useState<'home' | 'game' | 'onboarding' | 'reward'>('home');
-  const [gameWon, setGameWon] = useState(false);
+  const [gameWon, setGameWon] = useState<boolean | string>(false);
   const [formData, setFormData] = useState<any>({});
   const [headcount, setHeadcount] = useState("");
 
@@ -22,7 +22,14 @@ export default function App() {
     setHeadcount(onboardingData.q2);
     const urlParams = new URLSearchParams(window.location.search);
     
-    const specialNote = `7.7 Hiring Fiesta - ${onboardingData.q1} - ${onboardingData.q2} - ${onboardingData.q3.join(', ')} - ${gameWon ? 'Voucher/TNGo' : 'Free Job Ads'}`;
+    let prizeString = 'Free Job Ads';
+    if (gameWon === true) prizeString = 'Voucher/TNGo';
+    else if (gameWon === 'tngo') prizeString = 'TNGo';
+    else if (gameWon === 'voucher') prizeString = 'Voucher';
+    else if (gameWon === 'mystery_box') prizeString = 'Mystery Box';
+    else if (gameWon === 'free_job_ad') prizeString = 'Free Job Ads';
+    
+    const specialNote = `7.7 Hiring Fiesta - ${onboardingData.q1} - ${onboardingData.q2} - ${onboardingData.q3.join(', ')} - ${prizeString}`;
 
     const finalData = {
       company_name: formData.companyName,
