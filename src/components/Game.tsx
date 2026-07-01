@@ -56,7 +56,7 @@ const games = [
 export default function Game({ onComplete }: GameProps) {
   const [gameState, setGameState] = useState<
     "selection" | "jackpot" | "plinko" | "result"
-  >("plinko");
+  >("selection");
   const [gameResult, setGameResult] = useState<boolean>(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinEmojis, setSpinEmojis] = useState(["❓", "❓", "❓"]);
