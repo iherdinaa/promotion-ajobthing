@@ -9,104 +9,145 @@ interface RewardScreenProps {
   headcount?: string;
 }
 
-const VoucherPrize = () => (
-  <div className="bg-orange-50 rounded-2xl p-6 border-2 border-orange-200 flex flex-col items-center text-center w-full">
-    <h3 className="text-xl font-black text-orange-800 mb-6">
+const VoucherPrize = ({ compact = false }: { compact?: boolean }) => (
+  <div
+    className={`bg-orange-50 rounded-2xl ${compact ? "p-3" : "p-6"} border-2 border-orange-200 flex flex-col items-center text-center w-full h-full`}
+  >
+    <h3
+      className={`${compact ? "text-[11px] leading-tight lg:text-sm" : "text-xl"} font-black text-orange-800 mb-2 lg:mb-4 h-8 flex items-center justify-center`}
+    >
       AJobThing Voucher
     </h3>
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center flex-1 justify-between">
       <img
         src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-32b78986-c8d5-48e2-997b-7b1ca52460fd.png"
-        className="h-40 object-contain drop-shadow-lg"
+        className={`${compact ? "h-24" : "h-40"} object-contain drop-shadow-lg`}
         alt="AJobThing Voucher"
       />
-      <span className="text-lg font-bold text-orange-900 mt-4">
-        Up to RM477 OFF
-      </span>
-      <span className="text-sm text-gray-500 mt-2 font-bold">
-        (Valid until 7 July 2026)
-      </span>
-    </div>
-  </div>
-);
-
-const TnGoPrize = () => (
-  <div className="bg-blue-50 rounded-2xl p-6 border-2 border-blue-200 flex flex-col items-center text-center w-full h-full">
-    <h3 className="text-xl font-black text-blue-800 mb-6">
-      1 Ticket to Join Lucky Draw
-    </h3>
-    <div className="flex flex-col items-center justify-center flex-1 relative w-full h-full">
-      <div className="relative flex flex-col items-center">
-        <div className="absolute inset-0 bg-blue-400/20 blur-xl rounded-full"></div>
-        <img
-          src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-3b14d0e8-ef24-45d6-897c-eaf15d9f9fec.png"
-          className="relative h-40 object-contain drop-shadow-xl z-10"
-          alt="TnGo Lucky Draw"
-        />
-        <span className="text-sm font-bold text-gray-600 mt-4 px-4 py-2 bg-white rounded-lg shadow-sm">
-          Winners will be announced on 7 July 2026
+      <div className="flex flex-col mt-auto">
+        <span
+          className={`${compact ? "text-xs" : "text-lg"} font-bold text-orange-900 mt-2`}
+        >
+          Up to RM477 OFF
+        </span>
+        <span
+          className={`${compact ? "text-[9px]" : "text-sm"} text-gray-500 mt-1 font-bold`}
+        >
+          (Valid till 7 Jul 2026)
         </span>
       </div>
     </div>
   </div>
 );
 
-const FreeJobAdPrize = () => (
-  <div className="w-full max-w-4xl bg-gray-50 rounded-2xl p-4 lg:p-6 border-2 border-gray-200 flex flex-col md:flex-row items-center justify-between text-center md:text-left gap-6 lg:gap-8 mx-auto">
-    <div className="flex flex-col items-center justify-center shrink-0">
-      <h3 className="text-xl font-black text-gray-800 mb-2">
+const TnGoPrize = ({ compact = false }: { compact?: boolean }) => (
+  <div
+    className={`bg-blue-50 rounded-2xl ${compact ? "p-3" : "p-6"} border-2 border-blue-200 flex flex-col items-center text-center w-full h-full`}
+  >
+    <h3
+      className={`${compact ? "text-[11px] leading-tight lg:text-sm" : "text-xl"} font-black text-blue-800 mb-2 lg:mb-4 h-8 flex items-center justify-center`}
+    >
+      1 Ticket to Join Lucky Draw
+    </h3>
+    <div className="flex flex-col items-center justify-center flex-1 relative w-full h-full">
+      <div className="relative flex flex-col items-center w-full h-full">
+        <div className="absolute inset-0 bg-blue-400/20 blur-xl rounded-full"></div>
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <img
+            src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-3b14d0e8-ef24-45d6-897c-eaf15d9f9fec.png"
+            className={`relative ${compact ? "h-20" : "h-40"} object-contain drop-shadow-xl z-10`}
+            alt="TnGo Lucky Draw"
+          />
+        </div>
+        <span
+          className={`${compact ? "text-[9px] mt-2" : "text-sm mt-4"} font-bold text-gray-600 px-2 lg:px-4 py-1 lg:py-2 bg-white rounded-lg shadow-sm leading-tight max-w-[150px] lg:max-w-full w-full`}
+        >
+          Winners announced 7 Jul '26
+        </span>
+      </div>
+    </div>
+  </div>
+);
+
+const FreeJobAdPrize = ({ compact = false }: { compact?: boolean }) => (
+  <div
+    className={`w-full bg-gray-50 rounded-2xl ${compact ? "p-3" : "p-4 lg:p-6"} border-2 border-gray-200 flex ${compact ? "flex-col" : "flex-col md:flex-row"} items-center justify-between text-center ${compact ? "" : "md:text-left"} gap-3 lg:gap-8 mx-auto h-full`}
+  >
+    <div
+      className={`flex flex-col items-center justify-center shrink-0 ${compact ? "w-full" : ""}`}
+    >
+      <h3
+        className={`${compact ? "text-[11px] leading-tight lg:text-sm h-8 flex items-center justify-center" : "text-xl"} font-black text-gray-800 mb-2`}
+      >
         1 Free Internship Job Ad
       </h3>
-      <img
-        src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-597cc0ba-7ed7-49b6-acc7-4c28650f79ad.png"
-        className="h-28 lg:h-32 object-contain drop-shadow-lg"
-        alt="Free Internship Job Ad"
-      />
+      <div
+        className={`${compact ? "flex-1 flex items-center justify-center" : ""}`}
+      >
+        <img
+          src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-597cc0ba-7ed7-49b6-acc7-4c28650f79ad.png"
+          className={`${compact ? "h-24" : "h-28 lg:h-32"} object-contain drop-shadow-lg`}
+          alt="Free Internship Job Ad"
+        />
+      </div>
     </div>
 
-    <div className="flex flex-col items-center md:items-start gap-4 w-full">
-      <span className="text-sm lg:text-base text-gray-700 font-bold bg-white px-6 py-4 rounded-xl border border-gray-200 shadow-sm w-full">
-        Free Intern Job Ad will be assigned to your account. Login and post job
-        now before expired in 7 days.
+    <div
+      className={`flex flex-col items-center ${compact ? "" : "md:items-start"} gap-2 lg:gap-4 w-full mt-auto`}
+    >
+      <span
+        className={`${compact ? "text-[9px] leading-tight lg:text-xs px-2 py-1" : "text-sm lg:text-base px-6 py-4"} text-gray-700 font-bold bg-white rounded-xl border border-gray-200 shadow-sm w-full`}
+      >
+        {compact
+          ? "Login and post job before it expires in 7 days."
+          : "Free Intern Job Ad will be assigned to your account. Login and post job now before expired in 7 days."}
       </span>
 
       <a
         href="https://www.ajobthing.com/login?redirect=/campaign/rewards"
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-black py-3 lg:py-4 px-10 rounded-xl text-lg shadow-lg hover:scale-105 transition-transform mt-2 text-center"
+        className={`w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-black ${compact ? "py-2 px-4 text-xs" : "py-3 lg:py-4 px-10 text-lg"} rounded-xl shadow-lg hover:scale-105 transition-transform mt-1 text-center`}
       >
-        Post Job Now
+        Post Job
       </a>
     </div>
   </div>
 );
 
-const MysteryBoxPrize = () => (
-  <div className="bg-purple-50 rounded-2xl p-6 border-2 border-purple-200 flex flex-col items-center text-center w-full max-w-lg mx-auto">
-    <h3 className="text-xl font-black text-purple-800 mb-6">
-      Mystery Box: Jobie Sticker Pack
+const MysteryBoxPrize = ({ compact = false }: { compact?: boolean }) => (
+  <div
+    className={`bg-purple-50 rounded-2xl ${compact ? "p-3" : "p-6"} border-2 border-purple-200 flex flex-col items-center text-center w-full mx-auto h-full`}
+  >
+    <h3
+      className={`${compact ? "text-[11px] leading-tight lg:text-sm h-8 flex items-center justify-center" : "text-xl"} font-black text-purple-800 mb-2 lg:mb-6`}
+    >
+      Mystery Box: Jobie Sticker
     </h3>
-    <div className="flex flex-col items-center">
-      <div className="relative">
+    <div className="flex flex-col items-center flex-1 w-full justify-between">
+      <div className="relative flex-1 flex flex-col items-center justify-center">
         <div className="absolute inset-0 bg-purple-400/20 blur-xl rounded-full"></div>
         <img
           src="https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-86cd5a69-4b30-4813-85a7-4cb5c8daf5b9.png"
-          className="relative h-40 object-contain drop-shadow-xl z-10"
+          className={`relative ${compact ? "h-24" : "h-40"} object-contain drop-shadow-xl z-10`}
           alt="Jobie Sticker Pack"
         />
       </div>
-      <a
-        href="https://www.whatsapp.com/channel/0029VadYIsPB4hdYGIn57X2H"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-6 flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white font-black py-3 px-6 rounded-xl shadow-[0_5px_15px_-5px_rgba(37,211,102,0.5)] transition-all w-full text-lg relative z-10"
-      >
-        Download via WA Channel
-      </a>
-      <span className="text-sm text-gray-500 mt-2 font-bold">
-        (Will share soon)
-      </span>
+      <div className="flex flex-col items-center mt-auto w-full">
+        <a
+          href="https://www.whatsapp.com/channel/0029VadYIsPB4hdYGIn57X2H"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`mt-2 flex items-center justify-center gap-1 bg-[#25D366] hover:bg-[#128C7E] text-white font-black ${compact ? "py-1 px-2 text-[10px] lg:text-xs rounded-lg" : "py-3 px-6 text-lg rounded-xl"} shadow-[0_5px_15px_-5px_rgba(37,211,102,0.5)] transition-all w-full relative z-10`}
+        >
+          {compact ? "WA Channel" : "Download via WA Channel"}
+        </a>
+        <span
+          className={`${compact ? "text-[9px]" : "text-sm"} text-gray-500 mt-1 font-bold`}
+        >
+          (Will share soon)
+        </span>
+      </div>
     </div>
   </div>
 );
@@ -204,6 +245,22 @@ export default function RewardScreen({
               </div>
             ) : gameWon === "mystery_box" ? (
               <MysteryBoxPrize />
+            ) : gameWon === "all_rewards" ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 lg:gap-4 w-full">
+                <MysteryBoxPrize compact={true} />
+                <div
+                  onClick={() => setShowTngoPopup(true)}
+                  className="cursor-pointer hover:scale-105 transition-transform w-full h-full"
+                >
+                  <TnGoPrize compact={true} />
+                </div>
+                <div className="w-full h-full">
+                  <VoucherPrize compact={true} />
+                </div>
+                <div className="w-full h-full">
+                  <FreeJobAdPrize compact={true} />
+                </div>
+              </div>
             ) : (
               <FreeJobAdPrize />
             )}

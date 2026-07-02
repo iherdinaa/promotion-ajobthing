@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 import PlinkoGame from "./PlinkoGame";
+import SoccerGame from "./SoccerGame";
 
 interface GameProps {
   onComplete: (won: boolean | string) => void;
@@ -26,7 +27,7 @@ const games = [
   {
     date: 2,
     month: 6,
-    name: "Score Goal",
+    name: "Soccer Challenge (NEW)",
     img: "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-e7e04fbe-4b3d-4636-9a16-99056ca20706.png",
     id: "goal",
   },
@@ -55,7 +56,7 @@ const games = [
 
 export default function Game({ onComplete }: GameProps) {
   const [gameState, setGameState] = useState<
-    "selection" | "jackpot" | "plinko" | "result"
+    "selection" | "jackpot" | "plinko" | "goal" | "result"
   >("selection");
   const [gameResult, setGameResult] = useState<boolean>(false);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -101,6 +102,8 @@ export default function Game({ onComplete }: GameProps) {
       }, 100);
     } else if (gameId === "plinko") {
       setGameState("plinko");
+    } else if (gameId === "goal") {
+      setGameState("goal");
     }
   };
 
@@ -159,7 +162,10 @@ export default function Game({ onComplete }: GameProps) {
                 const isActive =
                   g.date === currentDay && g.month === currentMonth;
                 const displayActive =
-                  isActive || g.id === "jackpot" || g.id === "plinko";
+                  isActive ||
+                  g.id === "jackpot" ||
+                  g.id === "plinko" ||
+                  g.id === "goal";
 
                 return (
                   <motion.div
@@ -333,6 +339,9 @@ export default function Game({ onComplete }: GameProps) {
 
       {/* Plinko Game State */}
       {gameState === "plinko" && <PlinkoGame onComplete={onComplete} />}
+
+      {/* Soccer Game State */}
+      {gameState === "goal" && <SoccerGame onComplete={onComplete} />}
     </div>
   );
 }

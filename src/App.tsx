@@ -10,41 +10,50 @@ import OnboardingForm from "./components/OnboardingForm";
 import RewardScreen from "./components/RewardScreen";
 
 // Replace this with the actual Web App URL after deploying the Apps Script
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPsoQs4N5B1Qwd2IsQl_cyS6RB9X0olaqXhH9QDQLzvI_uk7x1dkW8NXSetSTgipKGIw/exec";
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbzPsoQs4N5B1Qwd2IsQl_cyS6RB9X0olaqXhH9QDQLzvI_uk7x1dkW8NXSetSTgipKGIw/exec";
 
 export default function App() {
-  const [screen, setScreen] = useState<'home' | 'game' | 'onboarding' | 'reward'>('home');
+  const [screen, setScreen] = useState<
+    "home" | "game" | "onboarding" | "reward"
+  >("home");
   const [gameWon, setGameWon] = useState<boolean | string>(false);
   const [formData, setFormData] = useState<any>({});
   const [headcount, setHeadcount] = useState("");
 
-  const handleOnboardingComplete = async (onboardingData: { q1: string; q2: string; q3: string[] }) => {
+  const handleOnboardingComplete = async (onboardingData: {
+    q1: string;
+    q2: string;
+    q3: string[];
+  }) => {
     setHeadcount(onboardingData.q2);
     const urlParams = new URLSearchParams(window.location.search);
-    
-    let prizeString = 'Free Job Ads';
-    if (gameWon === true) prizeString = 'Voucher/TNGo';
-    else if (gameWon === 'tngo') prizeString = 'TNGo';
-    else if (gameWon === 'voucher') prizeString = 'Voucher';
-    else if (gameWon === 'mystery_box') prizeString = 'Mystery Box';
-    else if (gameWon === 'free_job_ad') prizeString = 'Free Job Ads';
-    
-    const specialNote = `7.7 Hiring Fiesta - ${onboardingData.q1} - ${onboardingData.q2} - ${onboardingData.q3.join(', ')} - ${prizeString}`;
+
+    let prizeString = "Free Job Ads";
+    if (gameWon === true) prizeString = "Voucher/TNGo";
+    else if (gameWon === "tngo") prizeString = "TNGo";
+    else if (gameWon === "voucher") prizeString = "Voucher";
+    else if (gameWon === "mystery_box") prizeString = "Mystery Box";
+    else if (gameWon === "free_job_ad") prizeString = "Free Job Ads";
+    else if (gameWon === "all_rewards")
+      prizeString = "All Rewards (Goal Scored)";
+
+    const specialNote = `7.7 Hiring Fiesta - ${onboardingData.q1} - ${onboardingData.q2} - ${onboardingData.q3.join(", ")} - ${prizeString}`;
 
     const finalData = {
       company_name: formData.companyName,
       email: formData.email,
       phone: formData.phone,
-      ajt_account: formData.hasAccount || formData.ajtAccount || '',
+      ajt_account: formData.hasAccount || formData.ajtAccount || "",
       hiring_timeline: onboardingData.q1,
       headcount: onboardingData.q2,
-      job_platform: onboardingData.q3.join(', '),
+      job_platform: onboardingData.q3.join(", "),
       special_note: specialNote,
-      utm_source: urlParams.get('utm_source') || 'direct',
-      utm_medium: urlParams.get('utm_medium') || 'direct',
-      utm_campaign: urlParams.get('utm_campaign') || 'direct',
-      sheetId: import.meta.env.VITE_SHEET_ID || '',
-      sheetName: import.meta.env.VITE_SHEET_NAME || ''
+      utm_source: urlParams.get("utm_source") || "direct",
+      utm_medium: urlParams.get("utm_medium") || "direct",
+      utm_campaign: urlParams.get("utm_campaign") || "direct",
+      sheetId: import.meta.env.VITE_SHEET_ID || "",
+      sheetName: import.meta.env.VITE_SHEET_NAME || "",
     };
 
     // Send data to Google Sheets via Apps Script
@@ -64,15 +73,37 @@ export default function App() {
       console.error("Error submitting data", error);
     }
 
-    setScreen('reward');
+    setScreen("reward");
   };
 
   return (
     <div className="font-sans">
-      {screen === 'home' && <Homepage onStart={(data) => { setFormData(data); setScreen('game'); }} />}
-      {screen === 'game' && <Game onComplete={(won) => { setGameWon(won); setScreen('onboarding'); }} />}
-      {screen === 'onboarding' && <OnboardingForm onComplete={handleOnboardingComplete} />}
-      {screen === 'reward' && <RewardScreen onPlayAgain={() => setScreen('home')} gameWon={gameWon} headcount={headcount} />}
+      {screen === "home" && (
+        <Homepage
+          onStart={(data) => {
+            setFormData(data);
+            setScreen("game");
+          }}
+        />
+      )}
+      {screen === "game" && (
+        <Game
+          onComplete={(won) => {
+            setGameWon(won);
+            setScreen("onboarding");
+          }}
+        />
+      )}
+      {screen === "onboarding" && (
+        <OnboardingForm onComplete={handleOnboardingComplete} />
+      )}
+      {screen === "reward" && (
+        <RewardScreen
+          onPlayAgain={() => setScreen("home")}
+          gameWon={gameWon}
+          headcount={headcount}
+        />
+      )}
     </div>
   );
 }
