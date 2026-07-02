@@ -4,6 +4,7 @@ import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 import PlinkoGame from "./PlinkoGame";
 import SoccerGame from "./SoccerGame";
+import RingTossGame from "./RingTossGame";
 
 interface GameProps {
   onComplete: (won: boolean | string) => void;
@@ -56,7 +57,7 @@ const games = [
 
 export default function Game({ onComplete }: GameProps) {
   const [gameState, setGameState] = useState<
-    "selection" | "jackpot" | "plinko" | "goal" | "result"
+    "selection" | "jackpot" | "plinko" | "goal" | "ring" | "result"
   >("selection");
   const [gameResult, setGameResult] = useState<boolean>(false);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -104,6 +105,8 @@ export default function Game({ onComplete }: GameProps) {
       setGameState("plinko");
     } else if (gameId === "goal") {
       setGameState("goal");
+    } else if (gameId === "ring") {
+      setGameState("ring");
     }
   };
 
@@ -165,7 +168,8 @@ export default function Game({ onComplete }: GameProps) {
                   isActive ||
                   g.id === "jackpot" ||
                   g.id === "plinko" ||
-                  g.id === "goal";
+                  g.id === "goal" ||
+                  g.id === "ring";
 
                 return (
                   <motion.div
@@ -342,6 +346,9 @@ export default function Game({ onComplete }: GameProps) {
 
       {/* Soccer Game State */}
       {gameState === "goal" && <SoccerGame onComplete={onComplete} />}
+
+      {/* Ring Toss Game State */}
+      {gameState === "ring" && <RingTossGame onComplete={onComplete} />}
     </div>
   );
 }
