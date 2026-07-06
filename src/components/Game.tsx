@@ -5,6 +5,7 @@ import { useWindowSize } from "react-use";
 import PlinkoGame from "./PlinkoGame";
 import SoccerGame from "./SoccerGame";
 import RingTossGame from "./RingTossGame";
+import PopBalloonGame from "./PopBalloonGame";
 
 interface GameProps {
   onComplete: (won: boolean | string) => void;
@@ -42,7 +43,7 @@ const games = [
   {
     date: 6,
     month: 6,
-    name: "Pop Up Ballon",
+    name: "Pop Balloon",
     img: "https://s3-ap-southeast-1.amazonaws.com/ricebowl/images/marketing-campaign/image-123e7d29-1dca-4cc3-8a10-9af721a8538d.png",
     id: "balloon",
   },
@@ -57,7 +58,7 @@ const games = [
 
 export default function Game({ onComplete }: GameProps) {
   const [gameState, setGameState] = useState<
-    "selection" | "jackpot" | "plinko" | "goal" | "ring" | "result"
+    "selection" | "jackpot" | "plinko" | "goal" | "ring" | "balloon" | "result"
   >("selection");
   const [gameResult, setGameResult] = useState<boolean>(false);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -107,6 +108,8 @@ export default function Game({ onComplete }: GameProps) {
       setGameState("goal");
     } else if (gameId === "ring") {
       setGameState("ring");
+    } else if (gameId === "balloon") {
+      setGameState("balloon");
     }
   };
 
@@ -169,7 +172,8 @@ export default function Game({ onComplete }: GameProps) {
                   g.id === "jackpot" ||
                   g.id === "plinko" ||
                   g.id === "goal" ||
-                  g.id === "ring";
+                  g.id === "ring" ||
+                  g.id === "balloon";
 
                 return (
                   <motion.div
@@ -349,6 +353,9 @@ export default function Game({ onComplete }: GameProps) {
 
       {/* Ring Toss Game State */}
       {gameState === "ring" && <RingTossGame onComplete={onComplete} />}
+
+      {/* Pop Balloon Game State */}
+      {gameState === "balloon" && <PopBalloonGame onComplete={onComplete} />}
     </div>
   );
 }
