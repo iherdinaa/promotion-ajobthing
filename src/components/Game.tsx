@@ -6,6 +6,7 @@ import PlinkoGame from "./PlinkoGame";
 import SoccerGame from "./SoccerGame";
 import RingTossGame from "./RingTossGame";
 import PopBalloonGame from "./PopBalloonGame";
+import ThrowDartGame from "./ThrowDartGame";
 
 interface GameProps {
   onComplete: (won: boolean | string) => void;
@@ -58,7 +59,7 @@ const games = [
 
 export default function Game({ onComplete }: GameProps) {
   const [gameState, setGameState] = useState<
-    "selection" | "jackpot" | "plinko" | "goal" | "ring" | "balloon" | "result"
+    "selection" | "jackpot" | "plinko" | "goal" | "ring" | "balloon" | "dart" | "result"
   >("selection");
   const [gameResult, setGameResult] = useState<boolean>(false);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -110,6 +111,8 @@ export default function Game({ onComplete }: GameProps) {
       setGameState("ring");
     } else if (gameId === "balloon") {
       setGameState("balloon");
+    } else if (gameId === "dart") {
+      setGameState("dart");
     }
   };
 
@@ -173,7 +176,8 @@ export default function Game({ onComplete }: GameProps) {
                   g.id === "plinko" ||
                   g.id === "goal" ||
                   g.id === "ring" ||
-                  g.id === "balloon";
+                  g.id === "balloon" ||
+                  g.id === "dart";
 
                 return (
                   <motion.div
@@ -356,6 +360,9 @@ export default function Game({ onComplete }: GameProps) {
 
       {/* Pop Balloon Game State */}
       {gameState === "balloon" && <PopBalloonGame onComplete={onComplete} />}
+
+      {/* Throw Dart Game State */}
+      {gameState === "dart" && <ThrowDartGame onComplete={onComplete} />}
     </div>
   );
 }
